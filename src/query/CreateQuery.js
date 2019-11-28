@@ -9,6 +9,14 @@ const Type = {
 
 export default class CreateQuery {
     /**
+     * @returns {{bool: string, serial: string, text: string, real: string, bigint: string, int: string}}
+     * @constructor
+     */
+    static get Types() {
+        return Type;
+    }
+
+    /**
      * @param {string} tableName
      * @param {DbContext} context
      */
@@ -253,7 +261,7 @@ class Column {
         const defaultValue = ((typeof this._defaultValue !== 'undefined') && ` DEFAULT ${this._defaultValue}`) || '';
         const foreign = (this._referenceValue && ` REFERENCES ${this._referenceValue}`) || '';
         const unique = (this._isUnique && ` UNIQUE`) || '';
-        const primary = (this._isPrimary || ` PRIMARY KEY`) || '';
+        const primary = (this._isPrimary && ` PRIMARY KEY`) || '';
         const serial = (this._isSerial && ' SERIAL') || '';
         return `${this._name} ${this._type}${nullable}${defaultValue}${foreign}${unique}${primary}${serial}`;
     }
