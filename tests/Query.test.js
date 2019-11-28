@@ -52,7 +52,7 @@ describe("Query", () => {
     describe('join', () => {
         it('basic', () => {
             const query = new Query('table', null)
-                .join('other', join => join.inner.on(() => table.id === other.id));
+                .join('other', opt => opt.inner.on(() => table.id === other.id));
             query._generateFilterSql.should.equal('INNER JOIN other ON (table.id = other.id)');
         });
     })
