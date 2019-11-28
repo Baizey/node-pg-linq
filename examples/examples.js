@@ -1,6 +1,8 @@
-import SqlConstructor from "../index";
+import DbContext from "../index";
+import {Pool} from 'pg';
 
-const users = SqlConstructor.usingPool('users', null);
+const users = new DbContext('users');
+users.usingPool(Pool());
 
 const create = users.create;
 create.serial('id').unique();
