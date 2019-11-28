@@ -1,7 +1,15 @@
 // noinspection ES6UnusedImports
 import should from "should";
-import CreateQuery from "../src/query/DeleteQuery";
+import DeleteQuery from "../src/query/DeleteQuery";
 
 describe("DeleteQuery", () => {
-
+    it('basic', () => {
+        const query = new DeleteQuery('table', null);
+        query.toString().should.equal('DELETE FROM table ');
+    });
+    it('where', () => {
+        const query = new DeleteQuery('table', null)
+            .where(e => e.id === $, 1);
+        query.toString().should.equal('DELETE FROM table WHERE id = ${auto_param_0}');
+    });
 });
