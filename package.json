@@ -1,0 +1,22 @@
+{
+  "name": "pg-linq",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "sql",
+    "postgres",
+    "pg",
+    "node-postgres",
+    "postgreSQL"
+  ],
+  "author": "Baizey",
+  "license": "ISC",
+  "dependencies": {
+    "node-fetch": "^2.6.0",
+    "pg": "^7.12.1"
+  }
+}
