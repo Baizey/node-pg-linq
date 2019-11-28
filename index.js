@@ -9,12 +9,25 @@ const pg = pgTemp.defaults;
 
 export default class DbContext {
     /**
-     * @param {string} tableName
+     * @param {function(sql:string, params:*[]):Promise<{
+     *     rowCount: int,
+     *     rows: *[],
+     *     fields: {name: string, dataTypeId: *}[],
+     *     command: string
+     * }>} usage
+     * @returns {DbContext}
+     */
+    using(usage) {
+        this._usage = usage;
+        return this;
+    }
+
+    /**
      * @param {Pool} pool
      * @returns {DbContext}
      */
-    static usingPool(tableName, pool) {
-        const usage = async (sql, params) => {
+    usingPool(pool) {
+        this._usage = async (sql, params) => {
             const client = await pool.connect();
             const resp = await client.query({
                 text: sql,
@@ -23,29 +36,28 @@ export default class DbContext {
             client.release();
             return resp;
         };
-        return new DbContext(tableName, usage);
+        return this;
     }
 
     /**
-     * @param {string} tableName
      * @param {Client} client
      * @returns {DbContext}
      */
-    static usingClient(tableName, client) {
-        const usage = async (sql, params) => await client.query({
+    usingClient(client) {
+        this._usage = async (sql, params) => await client.query({
             text: sql,
             values: params
         });
-        return new DbContext(tableName, usage);
+        return this;
     }
 
     /**
      * @param {string} tableName
-     * @param {function(sql:string, params:*[]):*} queryRunner
      */
-    constructor(tableName, queryRunner) {
+    constructor(tableName) {
         this.tableName = tableName;
-        this._usage = queryRunner;
+        this._usage = async (sql, params) => {
+        };
     }
 
     /**
@@ -60,12 +72,18 @@ export default class DbContext {
             values.push(parameters[key]);
             return `$${values.length}`;
         });
-        return [sql, parameters];
+        return [sql, values];
     }
 
     /**
      * @param {string} sql
      * @param {object|*[]} parameters
+     * @returns {Promise<{
+     *     rowCount: int,
+     *     rows: *[],
+     *     fields: {name: string, dataTypeId: *}[],
+     *     command: string
+     * }>}
      */
     async run(sql, parameters = []) {
         const [sqlParsed, sqlParameterized] = Array.isArray(parameters)
