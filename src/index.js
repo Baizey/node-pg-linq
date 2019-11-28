@@ -3,9 +3,6 @@ import SelectQuery from "./query/SelectQuery";
 import InsertQuery from "./query/InsertQuery";
 import DeleteQuery from "./query/DeleteQuery";
 import UpdateQuery from "./query/UpdateQuery";
-import * as pgTemp from 'pg';
-
-const pg = pgTemp.defaults;
 
 export default class DbContext {
     /**

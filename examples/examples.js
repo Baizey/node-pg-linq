@@ -1,4 +1,4 @@
-import DbContext from "../index";
+import DbContext from "../src";
 import {Pool} from 'pg';
 
 const users = new DbContext('users');
