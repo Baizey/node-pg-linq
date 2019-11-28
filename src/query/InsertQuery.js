@@ -60,7 +60,7 @@ export default class InsertQuery extends Query {
         const keys = this._generateInsertKeysSql;
         const values = this._generateInsertValuesSql;
         const ignoreConflict = (this._ignoreConflicts && ' ON CONFLICT DO NOTHING') || '';
-        return `INSERT INTO ${this._table} (${keys}) VALUES (${values})${ignoreConflict}`;
+        return `INSERT INTO ${this._tableName} (${keys}) VALUES (${values})${ignoreConflict}`;
     }
 
     /**

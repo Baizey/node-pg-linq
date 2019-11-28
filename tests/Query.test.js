@@ -8,6 +8,12 @@ describe("Query", () => {
         query._generateWhereSql.should.empty();
     });
 
+    it('where === constant', () => {
+        const query = new Query('table', null)
+            .where(e => e.id === 1);
+        query._generateWhereSql.should.equal('WHERE e.id = 1');
+    });
+
     it('where ===', () => {
         const query = new Query('table', null)
             .where(e => e.id === $, [1]);

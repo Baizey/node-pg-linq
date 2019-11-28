@@ -86,7 +86,7 @@ export default class SelectQuery extends Query {
         const order = (this._order.length && ` ORDER BY ${this._order.join(', ')}`) || '';
         const distinct = this._distinct ? 'DISTINCT ' : '';
 
-        return `SELECT ${distinct}${this._generateSelectSql} FROM ${this._table} ${this._generateWhereSql}${order}${limit}${offset}`;
+        return `SELECT ${distinct}${this._generateSelectSql} FROM ${this._tableName} ${this._generateWhereSql}${order}${limit}${offset}`;
     }
 
     /**

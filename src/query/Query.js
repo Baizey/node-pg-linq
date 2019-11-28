@@ -16,10 +16,19 @@ export default class Query {
      * @param {*[]} variables
      * @returns {Query}
      */
-    where(statement, variables) {
+    where(statement, variables = []) {
         this._where = statement;
         this._variables = variables;
         return this;
+    }
+
+    tableNameAs(name) {
+        this._as = name;
+    }
+
+    get _tableName() {
+        const as = this._as ? ` AS ${this._as}` : '';
+        return `${this._table}${as}`;
     }
 
     /**
