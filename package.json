@@ -16,7 +16,6 @@
   "author": "Baizey",
   "license": "ISC",
   "dependencies": {
-    "node-fetch": "^2.6.0",
     "pg": "^7.12.1"
   }
 }
