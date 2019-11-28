@@ -12,6 +12,6 @@ describe("UpdateQuery", () => {
         const query = new UpdateQuery('table', null)
             .columns({name: 'newName'})
             .where(e => e.id === $, 1);
-        query.toString().should.equal('UPDATE table SET name = ${name} WHERE e.id = ${auto_param_0}');
+        query.toString().should.equal('UPDATE table SET name = ${name} WHERE e.id = ${auto_0_0}');
     });
 });

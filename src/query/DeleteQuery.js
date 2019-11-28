@@ -23,7 +23,7 @@ export default class DeleteQuery extends Query {
      * @returns {string}
      */
     toString() {
-        return `DELETE FROM ${this._tableName} ${this._generateWhereSql}`;
+        return `DELETE FROM ${this._tableName} ${this._generateFilterSql}`;
     }
 
     /**
