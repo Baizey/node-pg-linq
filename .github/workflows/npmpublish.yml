@@ -1,6 +1,8 @@
 name: npm publish
 
-on: [push, pull_request]
+on:
+  release:
+    types: [push, pull_request, created]
 
 jobs:
   build:
