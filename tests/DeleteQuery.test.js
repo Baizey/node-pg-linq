@@ -10,6 +10,6 @@ describe("DeleteQuery", () => {
     it('where', () => {
         const query = new DeleteQuery('table', null)
             .where(e => e.id === $, 1);
-        query.toString().should.equal('DELETE FROM table WHERE id = ${auto_param_0}');
+        query.toString().should.equal('DELETE FROM table WHERE e.id = ${auto_param_0}');
     });
 });

@@ -13,7 +13,7 @@ export default class Query {
 
     /**
      * @param {function(*):boolean} statement
-     * @param {*} variables
+     * @param {*[]} variables
      * @returns {Query}
      */
     where(statement, variables) {
@@ -33,7 +33,7 @@ export default class Query {
         if (str.indexOf('=>') >= 0)
             [, row, statement] = /\s*([^\s=])\s*=>(.*)/.exec(str);
         else
-            [, row, statement] = /\s*function\s*\(([^)])+\)\s*{\s*return\s*([^;}]*)\s*;?\s*}\s*/.exec(str);
+            [, row, statement] = /\s*function\s*\(([^)]+)\)\s*{\s*return\s*([^;}]*)\s*;?\s*}\s*/.exec(str);
 
         statement = statement
             .replace(/\s*&&\s*/g, ' AND ')
@@ -42,8 +42,8 @@ export default class Query {
             .replace(/\s*!==\s*/g, ' <> ')
             .replace(/\s*==\s*/g, ' LIKE ')
             .replace(/\s*!=\s*/g, ' NOT LIKE ')
-            //.replace(/\s+in\s+\$/g, ' IN ')
-            .split(`${row}.`).join('').trim()
+            //.split(`${row}.`).join('')
+            .trim()
             .replace(/ {2,}/g, ' ');
 
         if (this._variables && this._variables.length > 0) {
