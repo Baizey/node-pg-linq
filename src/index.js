@@ -41,10 +41,13 @@ export default class DbContext {
      * @returns {DbContext}
      */
     usingClient(client) {
-        this._usage = async (sql, params) => await client.query({
-            text: sql,
-            values: params
-        });
+        this._usage = async (sql, params) => {
+            const r = await client.query({
+                text: sql,
+                values: params
+            });
+            return r;
+        };
         return this;
     }
 
@@ -83,9 +86,9 @@ export default class DbContext {
      * }>}
      */
     async run(sql, parameters = []) {
-        const [sqlParsed, sqlParameterized] = Array.isArray(parameters)
-            ? [sql, parameters] : this._parse(sqlParsed, parameters);
-        return await this._usage(sqlParameterized, sqlParameterized);
+        const [sqlParsed, parametersParsed] = Array.isArray(parameters)
+            ? [sql, parameters] : this._parse(sql, parameters);
+        return await this._usage(sqlParsed, parametersParsed);
     }
 
     async beginTransaction() {
