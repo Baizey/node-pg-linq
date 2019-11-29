@@ -10,12 +10,16 @@ on:
 
 jobs:
   build:
+    strategy:
+      matrix:
+        node-version: [8.x, 10.x, 12.x, 13.x]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v1
       - uses: actions/setup-node@v1
+      - name: Use Node.js ${{ matrix.node-version }}
         with:
-          node-version: 12
+          node-version: ${{ matrix.node-version }}
       - run: npm ci
       - run: npm test
 
