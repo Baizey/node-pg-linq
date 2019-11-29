@@ -130,5 +130,14 @@ export default class Query {
         const joins = this._generateJoinSql;
         return joins + (joins && where ? ' ' : '') + where;
     }
+
+    /**
+     * @returns {Promise<{rowCount: int, rows: *[], fields: {name: string, dataTypeId: *}[], command: string}>}
+     */
+    async run() {
+        const sql = this.toString();
+        const parameters = this._parameters;
+        return await this._context.run(sql, parameters);
+    }
 }
 
