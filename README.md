@@ -2,7 +2,7 @@
  An npm package to create Postgres queries in a linq-ish way
 
 # Compatible
-node 12.\*.\*
+node 8.\*, 10.\*, 12.\*, 13.\*,
 
 # Usage
 
