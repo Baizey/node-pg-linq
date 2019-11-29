@@ -21,7 +21,7 @@ export default class Query {
     }
 
     /**
-     * @param {function():boolean} statement
+     * @param {function():boolean|function(*):boolean|function(*,*):boolean|function(*,*,*):boolean} statement
      * @param {*[]} variables
      * @returns {Query}
      */

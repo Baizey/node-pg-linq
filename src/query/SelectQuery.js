@@ -23,7 +23,7 @@ export default class SelectQuery extends Query {
     }
 
     /**
-     * @param {function(*):boolean} statement
+     * @param {function():boolean|function(*):boolean|function(*,*):boolean|function(*,*,*):boolean} statement
      * @param {*} variables
      * @returns {SelectQuery}
      */

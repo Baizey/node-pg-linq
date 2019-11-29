@@ -21,7 +21,7 @@ export default class InsertQuery extends Query {
     }
 
     /**
-     * @param {function(object):boolean} statement
+     * @param {function():boolean|function(*):boolean|function(*,*):boolean|function(*,*,*):boolean} statement
      * @param {*} variables
      * @returns {InsertQuery}
      */
