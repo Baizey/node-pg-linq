@@ -5,7 +5,8 @@
   "description": "An npm package to create and execute postgres queries in a linq-ish way",
   "main": "src/index.js",
   "scripts": {
-    "test": "mocha 'tests/*.test.js' --require @babel/register"
+    "test": "mocha 'tests/*.test.js' --require @babel/register",
+    "release": "standard-version"
   },
   "keywords": [
     "sql",
@@ -20,22 +21,23 @@
     "pg": "^7.12.1"
   },
   "devDependencies": {
-    "esm": "^3.2.25",
-    "should": "^13.2.3",
     "@babel/cli": "^7.5.5",
     "@babel/core": "^7.5.5",
-    "babel-runtime": "^6.26.0",
-    "@babel/plugin-transform-runtime": "^7.6.2",
-    "@babel/plugin-syntax-import-meta": "^7.2.0",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
     "@babel/plugin-proposal-export-default-from": "^7.5.2",
+    "@babel/plugin-syntax-import-meta": "^7.2.0",
+    "@babel/plugin-transform-runtime": "^7.6.2",
     "@babel/polyfill": "^7.4.4",
     "@babel/preset-env": "^7.5.5",
     "@babel/register": "^7.5.5",
     "@babel/runtime": "^7.5.5",
+    "babel-runtime": "^6.26.0",
     "chai": "^4.2.0",
     "core-js": "^3.2.1",
+    "esm": "^3.2.25",
     "mocha": "^6.2.0",
-    "regenerator-runtime": "^0.13.3"
+    "regenerator-runtime": "^0.13.3",
+    "should": "^13.2.3",
+    "standard-version": "^7.0.1"
   }
 }
