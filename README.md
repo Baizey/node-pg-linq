@@ -121,17 +121,16 @@ The column object also has a number of functions on itself
 after everything is configured `create.run()` can be executed, it returns `Promise<void>` which you can await for the query to finish
  
  ## DeleteQuery
- 
 Supported clauses
  - WHERE
  - JOIN
- ## UpdateQuery
  
+ ## UpdateQuery
 Supported clauses:
  - WHERE
  - JOIN
+ 
  ## InsertQuery
-
 Supported clauses
  - WHERE
  - JOIN
@@ -139,7 +138,6 @@ Supported clauses
    - IGNORE
    
  ## SelectQuery
-
 Supported clauses
 - WHERE
 - JOIN
