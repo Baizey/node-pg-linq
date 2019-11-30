@@ -92,6 +92,10 @@ export default class DbContext {
         return await this._usage(sqlParsed, parametersParsed);
     }
 
+    async dropTable() {
+        return await this.run(`DROP TABLE IF EXISTS ${this.tableName}`);
+    }
+
     async beginTransaction() {
         return await this.run('BEGIN');
     }
