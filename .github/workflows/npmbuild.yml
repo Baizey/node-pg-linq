@@ -4,9 +4,11 @@ on:
   push:
     branches-ignore:
       - master
+      - master_temp
   pull_request:
     branches-ignore:
       - master
+      - master_temp
 
 jobs:
   build:

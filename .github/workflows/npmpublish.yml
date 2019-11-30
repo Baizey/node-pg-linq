@@ -12,9 +12,14 @@ jobs:
 
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        postgres-version: [9.6]
+        node-version: [12.x, 13.x]
+
     services:
       postgres:
-        image: postgres:9.6
+        image: postgres:${{ matrix.postgres-version }}
         ports:
           - 5432:5432
         env:
@@ -23,10 +28,6 @@ jobs:
           POSTGRES_DB: postgres
           POSTGRES_HOST: localhost
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-
-    strategy:
-      matrix:
-        node-version: [12.x, 13.x]
 
     steps:
       - uses: actions/checkout@v1
@@ -61,7 +62,7 @@ jobs:
       - run: git config user.name ${{secrets.user_name}}
       - run: npm ci
       - run: npm run release
-      - run: git push "https://${{secrets.user_name}}:${{secrets.github_registry_token}}@github.com/${{secrets.user_name}}/node-pg-linq.git" HEAD:master
       - run: npm publish
+      - run: git push "https://${{secrets.user_name}}:${{secrets.github_registry_token}}@github.com/${{secrets.user_name}}/node-pg-linq.git" HEAD:master_temp
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
