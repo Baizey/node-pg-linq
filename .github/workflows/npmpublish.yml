@@ -58,7 +58,6 @@ jobs:
       - run: git config user.email ${{secrets.user_email}}
       - run: git config user.name ${{secrets.user_name}}
       - run: npm ci
-      - run: npm run release && git push origin HEAD:master
-      - run: npm publish
+      - run: npm run release && git push "https://${{secrets.user_name}}:${{secrets.github_registry_token}}@github.com/node-pg-linq.git" HEAD:master && npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
