@@ -40,6 +40,7 @@ export default class SelectQuery extends Query {
      */
     orderBy(column, ascending = true) {
         this._order.push(`${column} ${ascending ? 'ASC' : 'DESC'}`);
+        return this;
     }
 
     /**
@@ -52,6 +53,7 @@ export default class SelectQuery extends Query {
             this._columns.push(`DISTINCT ON (${value}) ${value}`);
         } else
             this._distinct = !!value;
+        return this;
     }
 
     /**
@@ -60,6 +62,7 @@ export default class SelectQuery extends Query {
      */
     limit(limit) {
         this._limit = limit;
+        return this;
     }
 
     /**
@@ -68,6 +71,7 @@ export default class SelectQuery extends Query {
      */
     offset(n) {
         this._offset = n;
+        return this;
     }
 
     /**
@@ -86,7 +90,7 @@ export default class SelectQuery extends Query {
         const order = (this._order.length && ` ORDER BY ${this._order.join(', ')}`) || '';
         const distinct = this._distinct ? 'DISTINCT ' : '';
 
-        return `SELECT ${distinct}${this._generateSelectSql} FROM ${this._tableName} ${this._generateFilterSql}${order}${limit}${offset}`;
+        return `SELECT ${distinct}${this._generateSelectSql} FROM ${this._tableName}${this._generateFilterSql}${order}${limit}${offset}`;
     }
 
     /**
