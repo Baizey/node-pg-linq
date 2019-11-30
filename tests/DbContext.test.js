@@ -36,21 +36,24 @@ const addPool = context => {
     return pool;
 };
 
-describe("DbContext", () => {
-    it('connect and use client', async () => {
+describe("DbContext", function () {
+    this.timeout(10000);
+    it('connect and use client', async function () {
         const name = 'pg-linq-test-table-client';
         const context = new DbContext(name);
         const conn = addClient(context);
         await createEmptyTable(context);
         conn.end();
+        true.should.True();
     });
 
-    it('connect and use pool', async () => {
+    it('connect and use pool', async function () {
         const name = 'pg-linq-test-table-pool';
         const context = new DbContext(name);
         const conn = addPool(context);
         await createEmptyTable(context);
         conn.end();
+        true.should.True();
     });
 
     it('get select query', () => {
