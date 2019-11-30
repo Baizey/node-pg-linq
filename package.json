@@ -1,6 +1,6 @@
 {
   "name": "pg-linq",
-  "version": "1.1.8",
+  "version": "1.1.9",
   "repository": "https://github.com/Baizey/node-pg-linq",
   "description": "An npm package to create and execute postgres queries in a linq-ish way",
   "main": "src/index.js",
