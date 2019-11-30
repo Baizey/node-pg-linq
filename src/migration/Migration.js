@@ -66,12 +66,11 @@ export default class MigrationQueries {
         if (oldColumn.isNullable !== newColumn.isNullable)
             this._queries.push(`ALTER TABLE ${this._name} ALTER COLUMN ${oldColumn.name} ${newColumn.isNullable ? 'SET' : 'DROP'} NOT NULL`);
 
-
         if (oldColumn.type !== newColumn.type) {
             this._queries.push(`ALTER TABLE ${this._name} ALTER COLUMN ${oldColumn.name} DROP DEFAULT`);
             this._queries.push(`ALTER TABLE ${this._name} ALTER COLUMN ${oldColumn.name} SET DATA TYPE ${newColumn.type}`);
         }
-        
+
         if ((typeof newColumn.defaultValue !== 'undefined'))
             this._queries.push(`ALTER TABLE ${this._name} ALTER COLUMN ${oldColumn.name} SET DEFAULT ${newColumn.defaultValue}`);
 
@@ -84,7 +83,15 @@ export default class MigrationQueries {
      * @returns {Promise<void>}
      */
     async run() {
-        for (let i in this.queries)
-            await this._context.run(this.queries[i]);
+        return await this._context.beginTransaction()
+            .then(async () => {
+                for (let i in this.queries)
+                    await this._context.run(this.queries[i]);
+                await this._context.commit();
+            })
+            .catch(async err => {
+                await this._context.rollback();
+                throw err;
+            })
     }
 }
