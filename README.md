@@ -101,55 +101,118 @@ on the QueryJoiner object you will have 3 types of functions, .as(alias) to give
  
 ## CreateQuery
  
-Create table queries share no similarities with other queries and act much in the same way C#'s fluent API for entity framework.
+Creating table queries act much in the same way C#'s fluent API for entity framework works.
 
-When you have a CreateQuery you have a number of functions to use, most of these are to add a new column of a certain type (int, bigint, real, bool, text, serial). You also have addColumn(name, type) where you can add a custom type or something this package is missing
+Directly supported column types:
+- int `create.int('name')`
+- bigint `create.bigint('name')`
+- bool `create.bool('name')`
+- text `create.text('name')`
+- real `create.real('name')`
+- serial `create.serial('name')`
 
-You also have 2 other functions, `primaryKeysGroup(Column[])` and `uniqueGroup(Column[])` which are for creating primary keys and unique constraints on groups of columns.
+for anything else there is:
 
-To finish you also have the `ignoreIfExists(bool)` function to have the query not error if the table already exists
+`create.addColumn(name, type)` where type is a `string`, fx 'int'
 
-When you call `create.int(name)` you will get a Column object, these are the objects expected in the group calls
+All these functions takes an argument name as a `string` and returns a `Column` object
 
-The column object also has a number of functions on itself
+When columns has been created there are a few more functions you can utilize:
 
-- nullable(bool) (columns are by default nullable)
-- primary(bool)
-- unique(bool)
-- serial(bool)
-- reference(tableName, columnName)
-- withDefault(anything)
+- `uniqueGroup(Column[])` creates indexing for a group of columns
+- `primaryGroup(Column[])` creates primary key for a group of columns
+- `ignoreIfExists(bool)` ignores conflicts where table already exists
+
+The `column` object has a number of functions on itself, all functions return the `Column` object back
+- `nullable(bool)` (columns are by default nullable)
+- `primary(bool)` makes this column a primary key for itself same as `primaryGroup(Column[])` with only this column
+- `unique(bool)` makes this column a unique index for itself same as `uniqueGroup(Column[])` with only this column
+- `serial(bool)`
+- `reference(tableName, columnName)`
+- `withDefault(anything)`
 
 after everything is configured `create.run()` can be executed, it returns `Promise<void>` which you can await for the query to finish
  
+## Currently unsupported clauses
+Unsupported clauses
+- GROUP BY (just needs to be added)
+- JOIN
+    - NATURAL (just needs to be added)
+- ON CONFLICT
+    - UPDATE (just needs to be added)
+- multi insert (code structure doesn't fully support this yet)
+
 ## DeleteQuery
 Supported clauses
- - WHERE
- - JOIN
- 
+- WHERE `query.where(() => id === 5)`
+- AS (alias for table name) `query.as('alias')`
+- JOIN
+  - AS (alias for joined table name) `query.join('other', opt => opt.as('alias')`
+  - ON `query.join('other', opt => opt.on(() => other.id === table.id))`
+  - INNER       `query.join('other', opt => opt.inner)`
+  - FULL OUTER  `query.join('other', opt => opt.fullOuter)`
+  - LEFT        `query.join('other', opt => opt.left)`
+  - LEFT OUTER  `query.join('other', opt => opt.leftOuter)`
+  - RIGHT       `query.join('other', opt => opt.right)`
+  - RIGHT OUTER `query.join('other', opt => opt.rightOuter)`
+- run `query.run()` executes the query and returns `Promise<int>` with how many rows were affected
+- toString `query.toString()` returns the query as an sql string
+
 ## UpdateQuery
-Supported clauses:
- - WHERE
- - JOIN
- 
+Supported clauses
+- columns to update `query.columns({name: 'John', score: 4})`
+- WHERE `query.where(() => id === 5)`
+- AS (alias for table name) `query.as('alias')`
+- JOIN
+  - AS (alias for joined table name) `query.join('other', opt => opt.as('alias')`
+  - ON `query.join('other', opt => opt.on(() => other.id === table.id))`
+  - INNER       `query.join('other', opt => opt.inner)`
+  - FULL OUTER  `query.join('other', opt => opt.fullOuter)`
+  - LEFT        `query.join('other', opt => opt.left)`
+  - LEFT OUTER  `query.join('other', opt => opt.leftOuter)`
+  - RIGHT       `query.join('other', opt => opt.right)`
+  - RIGHT OUTER `query.join('other', opt => opt.rightOuter)`
+- run `query.run()` executes the query and returns `Promise<int>` with how many rows were affected
+- toString `query.toString()` returns the query as an sql string
+
 ## InsertQuery
 Supported clauses
- - WHERE
- - JOIN
+- columns to insert values for `query.columns({name: 'John', score: 4})`
+- WHERE `query.where(() => id === 5)`
+- AS (alias for table name) `query.as('alias')`
+- JOIN
+  - AS (alias for joined table name) `query.join('other', opt => opt.as('alias')`
+  - ON `query.join('other', opt => opt.on(() => other.id === table.id))`
+  - INNER       `query.join('other', opt => opt.inner)`
+  - FULL OUTER  `query.join('other', opt => opt.fullOuter)`
+  - LEFT        `query.join('other', opt => opt.left)`
+  - LEFT OUTER  `query.join('other', opt => opt.leftOuter)`
+  - RIGHT       `query.join('other', opt => opt.right)`
+  - RIGHT OUTER `query.join('other', opt => opt.rightOuter)`
  - ON CONFLICT
-   - IGNORE
-   
+   - IGNORE     `query.ignoreConflicts(true)`
+- run `query.run()` executes the query and returns `Promise<void>`
+- toString `query.toString()` returns the query as an sql string
+
 ## SelectQuery
 Supported clauses
-- WHERE
+- columns to return `query.columns(['id', 'name', 'score'])`
+- AS (alias for table name) `query.as('alias')`
+- WHERE `query.where(() => id === 5)`
 - JOIN
-- LIMIT
-- OFFSET
+  - AS (alias for joined table name) `query.join('other', opt => opt.as('alias')`
+  - ON `query.join('other', opt => opt.on(() => other.id === table.id))`
+  - INNER       `query.join('other', opt => opt.inner)`
+  - FULL OUTER  `query.join('other', opt => opt.fullOuter)`
+  - LEFT        `query.join('other', opt => opt.left)`
+  - LEFT OUTER  `query.join('other', opt => opt.leftOuter)`
+  - RIGHT       `query.join('other', opt => opt.right)`
+  - RIGHT OUTER `query.join('other', opt => opt.rightOuter)`
+- LIMIT     `query.limit(5)`
+- OFFSET    `query.offset(5)`
 - DISTINCT
-    - DISTINCT ON (column)
-    - DISTINCT
-- ORDER BY
-
-Unsupported clauses:
-- GROUP BY
- 
+    - DISTINCT ON (column)  `query.distinct('name')`
+    - DISTINCT              `query.distinct(true)`
+- one `query.one()` executes the query and returns `Promise<object|undefined>` the first row only (if no rows, returns undefined)
+- all `query.all()` executes the query and returns `Promise<object[]>` all rows (if none, returns empty array)
+- toString `query.toString()` returns the query as an sql string
