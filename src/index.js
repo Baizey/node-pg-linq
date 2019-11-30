@@ -20,7 +20,7 @@ export default class DbContext {
     }
 
     /**
-     * @param {Pool} pool
+     * @param {PG.Pool|Pool} pool
      * @returns {DbContext}
      */
     usingPool(pool) {
@@ -37,16 +37,17 @@ export default class DbContext {
     }
 
     /**
-     * @param {Client} client
+     * @param {PG.Client|Client} client
      * @returns {DbContext}
      */
     usingClient(client) {
-        this._usage = async (sql, params) => {
-            const r = await client.query({
-                text: sql,
-                values: params
+        this._usage = (sql, params) => {
+            return new Promise((resolve, reject) => {
+                client.query(sql, params, function (err, data) {
+                    if (err) reject(err);
+                    else resolve(data);
+                });
             });
-            return r;
         };
         return this;
     }
@@ -89,6 +90,10 @@ export default class DbContext {
         const [sqlParsed, parametersParsed] = Array.isArray(parameters)
             ? [sql, parameters] : this._parse(sql, parameters);
         return await this._usage(sqlParsed, parametersParsed);
+    }
+
+    async dropTable() {
+        return await this.run(`DROP TABLE IF EXISTS ${this.tableName}`);
     }
 
     async beginTransaction() {

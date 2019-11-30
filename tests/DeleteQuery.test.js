@@ -5,7 +5,7 @@ import DeleteQuery from "../src/query/DeleteQuery";
 describe("DeleteQuery", () => {
     it('basic', () => {
         const query = new DeleteQuery('table', null);
-        query.toString().should.equal('DELETE FROM table ');
+        query.toString().should.equal('DELETE FROM table');
     });
     it('where', () => {
         const query = new DeleteQuery('table', null)
