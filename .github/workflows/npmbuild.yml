@@ -37,4 +37,5 @@ jobs:
         env:
           PGHOST: localhost
           PGUSER: postgres
+          PGDATABASE: postgres
           CI: true
