@@ -120,27 +120,60 @@ The column object also has a number of functions on itself
 
 after everything is configured `create.run()` can be executed, it returns `Promise<void>` which you can await for the query to finish
  
+ ## Currently unsupported clauses
+ 
+Unsupported clauses:
+- GROUP BY
+- JOIN
+    - NATURAL
+- ON CONFLICT
+    - UPDATE
+
 ## DeleteQuery
 Supported clauses
  - WHERE
- - JOIN
+- JOIN
+  - INNER
+  - FULL OUTER
+  - LEFT
+  - LEFT OUTER
+  - RIGHT
+  - RIGHT OUTER
  
 ## UpdateQuery
-Supported clauses:
+Supported clauses
  - WHERE
- - JOIN
- 
+- JOIN
+  - INNER
+  - FULL OUTER
+  - LEFT
+  - LEFT OUTER
+  - RIGHT
+  - RIGHT OUTER
+     
 ## InsertQuery
 Supported clauses
  - WHERE
- - JOIN
+- JOIN
+  - INNER
+  - FULL OUTER
+  - LEFT
+  - LEFT OUTER
+  - RIGHT
+  - RIGHT OUTER
  - ON CONFLICT
    - IGNORE
-   
+
 ## SelectQuery
 Supported clauses
 - WHERE
 - JOIN
+  - INNER
+  - FULL OUTER
+  - LEFT
+  - LEFT OUTER
+  - RIGHT
+  - RIGHT OUTER
 - LIMIT
 - OFFSET
 - DISTINCT
