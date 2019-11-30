@@ -9,7 +9,7 @@ const Type = {
     real: 'real'
 };
 
-export default class CreateQuery {
+export default class CreateTableQuery {
     /**
      * @returns {{bool: string, serial: string, text: string, real: string, bigint: string, int: string}}
      * @constructor
@@ -33,7 +33,7 @@ export default class CreateQuery {
 
     /**
      * @param {boolean} value
-     * @returns {CreateQuery}
+     * @returns {CreateTableQuery}
      */
     ignoreIfExists(value = true) {
         this._ignoreExists = !!value;
@@ -56,7 +56,7 @@ export default class CreateQuery {
 
     /**
      * @param {Column[]} columns
-     * @returns {CreateQuery}
+     * @returns {CreateTableQuery}
      */
     uniqueGroup(columns) {
         if (columns) this._uniqueGroups.push(columns);
@@ -65,7 +65,7 @@ export default class CreateQuery {
 
     /**
      * @param {Column[]} columns
-     * @returns {CreateQuery}
+     * @returns {CreateTableQuery}
      */
     primaryGroup(columns) {
         this._primaryGroup = columns || [];
