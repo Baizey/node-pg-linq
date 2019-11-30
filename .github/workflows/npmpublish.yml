@@ -38,6 +38,11 @@ jobs:
           npm run build --if-present
           npm test
         env:
+          PGUSER: postgres
+          PGPASSWORD: postgres
+          PGHOST: localhost
+          PGPORT: ${{ job.services.postgres.ports[5432] }}
+          PGDATABASE: postgres
           CI: true
 
 
@@ -56,9 +61,4 @@ jobs:
       - run: npm run release
       - run: npm publish
         env:
-          PGUSER: postgres
-          PGPASSWORD: postgres
-          PGHOST: localhost
-          PGPORT: ${{ job.services.postgres.ports[5432] }}
-          PGDATABASE: postgres
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
