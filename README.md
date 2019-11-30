@@ -2,7 +2,7 @@
  An npm package to create Postgres queries in a linq-ish way
 
 # Compatible
-node 8.\*, 10.\*, 12.\*, 13.\*
+node 12.\*, 13.\*, earlier versions may be supported, but not tested
 
 Postgres 9.6 and onwards
 
