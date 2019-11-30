@@ -13,6 +13,10 @@ describe("SelectQuery", () => {
         table.select().offset(5).toString().should.equal('SELECT * FROM table OFFSET 5');
     });
 
+    it('limit and offset', () => {
+        table.select().offset(4).limit(4).toString().should.equal('SELECT * FROM table LIMIT 4 OFFSET 4');
+    });
+
     describe("orderBy", () => {
         it('asc', () => {
             table.select()
@@ -40,6 +44,16 @@ describe("SelectQuery", () => {
         });
         it('one', () => {
             table.select()
+                .distinct('id')
+                .toString().should.equal('SELECT DISTINCT ON (id) id FROM table');
+        });
+        it('combo', () => {
+            table.select(['name'])
+                .distinct('id')
+                .toString().should.equal('SELECT name, DISTINCT ON (id) id FROM table');
+        });
+        it('override', () => {
+            table.select(['id'])
                 .distinct('id')
                 .toString().should.equal('SELECT DISTINCT ON (id) id FROM table');
         });
