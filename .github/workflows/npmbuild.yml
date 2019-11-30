@@ -14,9 +14,14 @@ jobs:
   build:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        postgres-version: [9.6]
+        node-version: [12.x, 13.x]
+
     services:
       postgres:
-        image: postgres:9.6
+        image: postgres:${{ matrix.postgres-version }}
         ports:
           - 5432:5432
         env:
@@ -26,11 +31,8 @@ jobs:
           POSTGRES_HOST: localhost
         options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
 
-    strategy:
-      matrix:
-        node-version: [12.x, 13.x]
-
     steps:
+      - name: Use Postgres ${{ matrix.postgres-version }}
       - uses: actions/checkout@v1
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
