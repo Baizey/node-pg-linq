@@ -59,7 +59,7 @@ jobs:
       - run: git config user.name ${{secrets.user_name}}
       - run: npm ci
       - run: npm run release
-      - run: git push --follow-tags origin master
+      - run: git push
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
