@@ -180,4 +180,7 @@ Supported clauses
     - DISTINCT ON (column)
     - DISTINCT
 - ORDER BY
+
+Unsupported clauses:
+- GROUP BY
  
