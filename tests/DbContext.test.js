@@ -39,7 +39,7 @@ const addPool = context => {
 describe("DbContext", function () {
     //this.timeout(10000);
     it('connect and use client', async function () {
-        const name = 'pg-linq-test-table-client';
+        const name = 'pg_linq_test_table_client';
         const context = new DbContext(name);
         const conn = addClient(context);
         await createEmptyTable(context);
@@ -48,7 +48,7 @@ describe("DbContext", function () {
     }).timeout(10000);
 
     it('connect and use pool', async function () {
-        const name = 'pg-linq-test-table-pool';
+        const name = 'pg_linq_test_table_pool';
         const context = new DbContext(name);
         const conn = addPool(context);
         await createEmptyTable(context);
