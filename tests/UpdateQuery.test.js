@@ -19,9 +19,9 @@ describe("UpdateQuery", () => {
         });
     });
     describe('queries', () => {
-        let client, context = new DbContext('UpdateQueryTests');
-        beforeEach(async () => client = await Mock.client(context));
-        afterEach(async () => await Mock.finish(context, client));
+        const context = new DbContext('UpdateQueryTests');
+        beforeEach(async () => await Mock.client(context));
+        afterEach(async () => await Mock.finish(context));
 
         it('basic', async () => {
             await context.insert({name: 'John', id: 1}).run();

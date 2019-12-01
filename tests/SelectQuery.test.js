@@ -61,9 +61,9 @@ describe("SelectQuery", () => {
     });
 
     describe('queries', () => {
-        let client, context = new DbContext('SelectQueryTests');
-        beforeEach(async () => client = await Mock.client(context));
-        afterEach(async () => await Mock.finish(context, client));
+        const context = new DbContext('SelectQueryTests');
+        beforeEach(async () => await Mock.client(context));
+        afterEach(async () => await Mock.finish(context));
         it('limit', async () => {
             await context.insert({name: 'John', id: 1}).run();
             await context.insert({name: 'Bob', id: 2}).run();
