@@ -7,16 +7,21 @@ let mockInstance = null;
 export default class Mock {
     /**
      * @param {DbContext} context
+     * @param {function(CreateTableQuery):*} lamdaCreator
      * @returns {Promise<PG.Client>}
      */
-    static client(context) {
+    static client(context, lamdaCreator = undefined) {
         return new Promise(async r => {
             const client = new Client();
             client.connect();
             context.usingClient(client);
             const create = context.create().ignoreIfExists();
-            create.int('id').nullable(false);
-            create.text('name').nullable(false);
+            if (lamdaCreator)
+                lamdaCreator(create);
+            else {
+                create.int('id').nullable(false);
+                create.text('name').nullable(false);
+            }
             await create.run();
             r(client);
         });

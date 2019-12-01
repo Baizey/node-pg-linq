@@ -68,7 +68,7 @@ export class QueryJoiner {
     }
 
     /**
-     * @param {function():*} statement
+     * @param {function():*|function(*):*|function(*,*):*|function(*,*,*):*} statement
      * @param {*} variables
      * @returns {QueryJoiner}
      */

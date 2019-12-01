@@ -9,7 +9,7 @@ describe("UpdateQuery", () => {
         it('basic', () => {
             const query = new UpdateQuery('table', null)
                 .columns({name: 'newName'});
-            query.toString().should.equal('UPDATE table SET name = ${name} ');
+            query.toString().should.equal('UPDATE table SET name = ${name}');
         });
         it('where', () => {
             const query = new UpdateQuery('table', null)

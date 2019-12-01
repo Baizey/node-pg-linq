@@ -128,7 +128,10 @@ export default class Query {
     get _generateFilterSql() {
         const where = this._generateWhereSql;
         const joins = this._generateJoinSql;
-        return joins + (joins && where ? ' ' : '') + where;
+        if (!where && !joins) return '';
+        if (!where) return ' ' + joins;
+        if (!joins) return ' ' + where;
+        return ' ' + joins + ' ' + where;
     }
 
     /**

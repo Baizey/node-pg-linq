@@ -69,7 +69,7 @@ describe("DbContext", function () {
 
     it('get update query', () => {
         const context = new DbContext('table');
-        context.update().toString().should.equal('UPDATE table SET  ');
+        context.update().toString().should.equal('UPDATE table SET ');
     });
 
     it('get insert query', () => {

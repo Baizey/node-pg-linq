@@ -25,7 +25,7 @@ export default class DeleteQuery extends Query {
     toString() {
         const filter = this._generateFilterSql;
         const table = this._tableName;
-        return `DELETE FROM ${table}${filter ? ' ' : ''}${filter}`;
+        return `DELETE FROM ${table}${filter}`;
     }
 
     /**
