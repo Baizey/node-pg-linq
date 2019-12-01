@@ -68,14 +68,14 @@ where clauses are given as lambda function
 | OR | |
 | = | === |
 | <> | !== |
+| IS NULL | === null |
+| IS NOT NULL | !== null |
 | LIKE | == |
 | NOT LIKE | != |
 
 for everything else you need to write it as it should look in postgresql
 
 to pass variables into the queries you need to add a $ where they should be and add them as arguments after the function
-
-currently things like "X IS NULL" is not supported
 
 ```javascript
 query.where(() => id === $, 5);

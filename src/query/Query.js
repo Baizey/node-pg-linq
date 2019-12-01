@@ -73,6 +73,8 @@ export default class Query {
         statement = statement
             .replace(/\s*&&\s*/g, ' AND ')
             .replace(/\s*\|\|\s*/g, ' OR ')
+            .replace(/\s*===\s*null\s*/g, ' IS NULL ')
+            .replace(/\s*!==\s*null\s*/g, ' IS NOT NULL ')
             .replace(/\s*===\s*/g, ' = ')
             .replace(/\s*!==\s*/g, ' <> ')
             .replace(/\s*==\s*/g, ' LIKE ')
