@@ -154,9 +154,13 @@ export default class DbContext {
     }
 
     /**
+     * @param {function():boolean|function(*):boolean|function(*,*):boolean|function(*,*,*):boolean} statement
+     * @param {*} variables
      * @returns {DeleteQuery}
      */
-    delete() {
+    delete(statement = undefined, variables = []) {
+        if (statement)
+            return new DeleteQuery(this.tableName, this).where(statement, ...variables);
         return new DeleteQuery(this.tableName, this);
     }
 
