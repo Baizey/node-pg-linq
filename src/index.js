@@ -158,12 +158,9 @@ export default class DbContext {
      * @param {*} variables
      * @returns {DeleteQuery}
      */
-    delete(statement = undefined, variables = []) {
+    delete(statement = undefined, ...variables) {
         if (statement)
-            if (variables)
-                return new DeleteQuery(this.tableName, this).where(statement, ...variables);
-            else
-                return new DeleteQuery(this.tableName, this).where(statement);
+            return new DeleteQuery(this.tableName, this).where(statement, ...variables);
         return new DeleteQuery(this.tableName, this);
     }
 
