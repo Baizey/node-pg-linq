@@ -45,6 +45,30 @@ export class QueryJoiner {
     /**
      * @returns {QueryJoiner}
      */
+    get naturalLeft() {
+        this._type = 'NATURAL LEFT';
+        return this;
+    }
+
+    /**
+     * @returns {QueryJoiner}
+     */
+    get naturalRight() {
+        this._type = 'NATURAL RIGHT';
+        return this;
+    }
+
+    /**
+     * @returns {QueryJoiner}
+     */
+    get naturalInner() {
+        this._type = 'NATURAL INNER';
+        return this;
+    }
+
+    /**
+     * @returns {QueryJoiner}
+     */
     get right() {
         this._type = 'RIGHT';
         return this;
