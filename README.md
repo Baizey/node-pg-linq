@@ -2,9 +2,11 @@
  An npm package to create Postgres queries in a linq-ish way
 
 # Compatible
-node 12.\*, 13.\*, earlier versions may be supported, but not tested
+node 12.\*, 13.\*, other versions may be supported, but aren't tested
 
-Postgres 9.6 and onwards
+PostgreSQL 9.6, 10, 11, 12, other versions may be supported, but aren't tested
+
+Feature implementations aim towards being complete for lowest PostgreSQL version, newer features will not be supported
 
 # Usage
 
@@ -66,14 +68,14 @@ where clauses are given as lambda function
 | OR | |
 | = | === |
 | <> | !== |
+| IS NULL | === null |
+| IS NOT NULL | !== null |
 | LIKE | == |
 | NOT LIKE | != |
 
 for everything else you need to write it as it should look in postgresql
 
 to pass variables into the queries you need to add a $ where they should be and add them as arguments after the function
-
-currently things like "X IS NULL" is not supported
 
 ```javascript
 query.where(() => id === $, 5);

@@ -30,6 +30,21 @@ describe("Query", () => {
                 .where(table => table.id === $ || table.id === $, [1, 2]);
             query._generateFilterSql.should.equal(' WHERE table.id = ${auto_0_0} OR table.id = ${auto_0_1}');
         });
+        it('is null', () => {
+            const query = new Query('table', null)
+                .where(table => table.id === null);
+            query._generateFilterSql.should.equal(' WHERE table.id IS NULL');
+        });
+        it('is not null', () => {
+            const query = new Query('table', null)
+                .where(table => table.id !== null);
+            query._generateFilterSql.should.equal(' WHERE table.id IS NOT NULL');
+        });
+        it('not mixing = and IS', () => {
+            const query = new Query('table', null)
+                .where(table => table.id !== null && table.id === 5);
+            query._generateFilterSql.should.equal(' WHERE table.id IS NOT NULL AND table.id = 5');
+        });
         it('!==', () => {
             const query = new Query('table', null)
                 .where(table => table.id !== $, [1]);
