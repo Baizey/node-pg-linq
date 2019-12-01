@@ -136,8 +136,6 @@ after everything is configured `create.run()` can be executed, it returns `Promi
 ## Currently unsupported clauses
 Unsupported clauses
 - GROUP BY (just needs to be added)
-- JOIN
-    - NATURAL (just needs to be added)
 - ON CONFLICT
     - UPDATE (just needs to be added)
 - multi insert (code structure doesn't fully support this yet)
