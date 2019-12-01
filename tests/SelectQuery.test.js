@@ -35,6 +35,24 @@ describe("SelectQuery", () => {
                     .toString().should.equal('SELECT * FROM table ORDER BY id ASC, name ASC');
             });
         });
+        describe("groupBy", () => {
+            it('asc', () => {
+                table.select()
+                    .groupBy('id', true)
+                    .toString().should.equal('SELECT * FROM table GROUP BY id');
+            });
+            it('desc', () => {
+                table.select()
+                    .groupBy('id', false)
+                    .toString().should.equal('SELECT * FROM table GROUP BY id DESC');
+            });
+            it('multiple', () => {
+                table.select()
+                    .groupBy('id')
+                    .groupBy('name')
+                    .toString().should.equal('SELECT * FROM table GROUP BY id, name');
+            });
+        });
 
         describe("distinct", () => {
             it('all', () => {
@@ -45,17 +63,17 @@ describe("SelectQuery", () => {
             it('one', () => {
                 table.select()
                     .distinct('id')
-                    .toString().should.equal('SELECT DISTINCT ON (id) id FROM table');
+                    .toString().should.equal('SELECT DISTINCT ON (id) id, * FROM table');
             });
             it('combo', () => {
                 table.select(['name'])
                     .distinct('id')
-                    .toString().should.equal('SELECT name, DISTINCT ON (id) id FROM table');
+                    .toString().should.equal('SELECT DISTINCT ON (id) id, name FROM table');
             });
             it('override', () => {
                 table.select(['id'])
                     .distinct('id')
-                    .toString().should.equal('SELECT DISTINCT ON (id) id FROM table');
+                    .toString().should.equal('SELECT DISTINCT ON (id) id, * FROM table');
             });
         });
     });
@@ -77,10 +95,10 @@ describe("SelectQuery", () => {
         it('distinct on', async () => {
             await context.insert({name: 'Bob', id: 1}).run();
             await context.insert({name: 'Bob', id: 2}).run();
-            (await context.select().distinct('id').all())
+            (await context.select().distinct('name').all())
                 .should.deepEqual(
                 [
-                    {id: 1}, {id: 2}
+                    {id: 1, name: 'Bob'}
                 ]);
         });
         it('distinct', async () => {
@@ -101,6 +119,13 @@ describe("SelectQuery", () => {
                     {name: 'Bob', id: 2},
                     {name: 'John', id: 1}
                 ]);
-        })
+        });
+        it('groupBy', async () => {
+            await context.insert({name: 'Bob', id: 2}).run();
+            await context.insert({name: 'Bob', id: 3}).run();
+            await context.insert({name: 'Bob', id: 2}).run();
+            (await context.select(['SUM(id) as sum', 'name']).groupBy('name').all())
+                .should.deepEqual([{sum: '7', name: 'Bob'}]);
+        });
     });
 });

@@ -113,6 +113,6 @@ export class QueryJoiner {
 
     toString() {
         const as = this._as ? ` AS ${this._as}` : '';
-        return `${this._type} JOIN ${this._table}${as}${this._isNatual ? '' : `ON (${this._statement})`}`;
+        return `${this._type} JOIN ${this._table}${as}${this._isNatual ? '' : ` ON (${this._statement})`}`;
     }
 }

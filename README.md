@@ -132,13 +132,6 @@ The `column` object has a number of functions on itself, all functions return th
 - `withDefault(anything)`
 
 after everything is configured `create.run()` can be executed, it returns `Promise<void>` which you can await for the query to finish
- 
-## Currently unsupported clauses
-Unsupported clauses
-- GROUP BY (just needs to be added)
-- ON CONFLICT
-    - UPDATE (just needs to be added)
-- multi insert (code structure doesn't fully support this yet)
 
 ## DeleteQuery
 Supported clauses
@@ -147,6 +140,9 @@ Supported clauses
 - JOIN
   - AS (alias for joined table name) `query.join('other', opt => opt.as('alias')`
   - ON `query.join('other', opt => opt.on(() => other.id === table.id))`
+  - NATURAL LEFT        `query.join('other', opt => opt.naturalLeft)`
+  - NATURAL INNER       `query.join('other', opt => opt.naturalInner)`
+  - NATURAL RIGHT       `query.join('other', opt => opt.naturalRight)`
   - INNER       `query.join('other', opt => opt.inner)`
   - FULL OUTER  `query.join('other', opt => opt.fullOuter)`
   - LEFT        `query.join('other', opt => opt.left)`
@@ -164,6 +160,9 @@ Supported clauses
 - JOIN
   - AS (alias for joined table name) `query.join('other', opt => opt.as('alias')`
   - ON `query.join('other', opt => opt.on(() => other.id === table.id))`
+  - NATURAL LEFT        `query.join('other', opt => opt.naturalLeft)`
+  - NATURAL INNER       `query.join('other', opt => opt.naturalInner)`
+  - NATURAL RIGHT       `query.join('other', opt => opt.naturalRight)`
   - INNER       `query.join('other', opt => opt.inner)`
   - FULL OUTER  `query.join('other', opt => opt.fullOuter)`
   - LEFT        `query.join('other', opt => opt.left)`
@@ -181,6 +180,9 @@ Supported clauses
 - JOIN
   - AS (alias for joined table name) `query.join('other', opt => opt.as('alias')`
   - ON `query.join('other', opt => opt.on(() => other.id === table.id))`
+  - NATURAL LEFT        `query.join('other', opt => opt.naturalLeft)`
+  - NATURAL INNER       `query.join('other', opt => opt.naturalInner)`
+  - NATURAL RIGHT       `query.join('other', opt => opt.naturalRight)`
   - INNER       `query.join('other', opt => opt.inner)`
   - FULL OUTER  `query.join('other', opt => opt.fullOuter)`
   - LEFT        `query.join('other', opt => opt.left)`
@@ -200,6 +202,9 @@ Supported clauses
 - JOIN
   - AS (alias for joined table name) `query.join('other', opt => opt.as('alias')`
   - ON `query.join('other', opt => opt.on(() => other.id === table.id))`
+  - NATURAL LEFT        `query.join('other', opt => opt.naturalLeft)`
+  - NATURAL INNER       `query.join('other', opt => opt.naturalInner)`
+  - NATURAL RIGHT       `query.join('other', opt => opt.naturalRight)`
   - INNER       `query.join('other', opt => opt.inner)`
   - FULL OUTER  `query.join('other', opt => opt.fullOuter)`
   - LEFT        `query.join('other', opt => opt.left)`
@@ -208,6 +213,8 @@ Supported clauses
   - RIGHT OUTER `query.join('other', opt => opt.rightOuter)`
 - LIMIT     `query.limit(5)`
 - OFFSET    `query.offset(5)`
+- ORDER BY  `query.orderBy('name')` with optional secondary parameter bool ascending default `ascending = true` 
+- GROUP BY  `query.groupBy('name')` with optional secondary parameter bool ascending default `ascending = true` 
 - DISTINCT
     - DISTINCT ON (column)  `query.distinct('name')`
     - DISTINCT              `query.distinct(true)`

@@ -11,6 +11,8 @@ export default class SelectQuery extends Query {
         this._limit = 0;
         this._offset = 0;
         this._order = [];
+        this._grouping = [];
+        this._distincts = [];
     }
 
     /**
@@ -19,6 +21,7 @@ export default class SelectQuery extends Query {
      */
     columns(columns) {
         this._columns = columns || [];
+        this._distincts = this._distincts.filter(e => e === this._columns.indexOf(e) === -1);
         return this;
     }
 
@@ -29,6 +32,17 @@ export default class SelectQuery extends Query {
      */
     where(statement, ...variables) {
         super.where(statement, variables);
+        return this;
+    }
+
+    /**
+     * ASC is default in postgres, so we have it as default as well
+     * @param {string} column
+     * @param {boolean} ascending
+     * @returns {SelectQuery}
+     */
+    groupBy(column, ascending = true) {
+        this._grouping.push(`${column}${ascending ? '' : ' DESC'}`);
         return this;
     }
 
@@ -50,7 +64,7 @@ export default class SelectQuery extends Query {
     distinct(value = true) {
         if (typeof value === 'string') {
             this._columns = this._columns.filter(e => e !== value);
-            this._columns.push(`DISTINCT ON (${value}) ${value}`);
+            this._distincts.push(value);
         } else
             this._distinct = !!value;
         return this;
@@ -78,7 +92,10 @@ export default class SelectQuery extends Query {
      * @returns {string}
      */
     get _generateSelectSql() {
-        return this._columns.length === 0 ? '*' : this._columns.join(', ');
+        const columns = this._columns.length === 0 ? '*' : this._columns.join(', ');
+        const distinct = this._distincts.length === 0 ? '' : this._distincts.map(e => `DISTINCT ON (${e}) ${e}`).join(', ');
+        if (!distinct) return ' ' + columns;
+        return ` ${distinct}, ${columns}`;
     }
 
     /**
@@ -88,9 +105,10 @@ export default class SelectQuery extends Query {
         const limit = (this._limit && ` LIMIT ${this._limit}`) || '';
         const offset = (this._offset && ` OFFSET ${this._offset}`) || '';
         const order = (this._order.length && ` ORDER BY ${this._order.join(', ')}`) || '';
-        const distinct = this._distinct ? 'DISTINCT ' : '';
+        const group = (this._grouping.length && ` GROUP BY ${this._grouping.join(', ')}`) || '';
+        const distinct = this._distinct ? ' DISTINCT' : '';
 
-        return `SELECT ${distinct}${this._generateSelectSql} FROM ${this._tableName}${this._generateFilterSql}${order}${limit}${offset}`;
+        return `SELECT${distinct}${this._generateSelectSql} FROM ${this._tableName}${this._generateFilterSql}${group}${order}${limit}${offset}`;
     }
 
     /**

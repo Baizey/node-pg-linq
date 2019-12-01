@@ -72,7 +72,6 @@ describe("Query", () => {
             await context2.insert({id2: 1, name2: 'Bob'}).run();
 
             const query = context1.select().as('a').join(context2.tableName, opt => opt.as('b').right.on((a, b) => a.id === b.id2));
-            const sql = query.toString();
             (await query.all())
                 .should.deepEqual([{id: 1, name: 'John', id2: 1, name2: 'Bob'}]);
         });
