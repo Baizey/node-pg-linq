@@ -1,4 +1,4 @@
-import CreateQuery from "./query/CreateQuery";
+import CreateTableQuery from "./query/CreateTableQuery";
 import SelectQuery from "./query/SelectQuery";
 import InsertQuery from "./query/InsertQuery";
 import DeleteQuery from "./query/DeleteQuery";
@@ -109,10 +109,10 @@ export default class DbContext {
     }
 
     /***
-     * @returns {CreateQuery}
+     * @returns {CreateTableQuery}
      */
     create() {
-        return new CreateQuery(this.tableName, this);
+        return new CreateTableQuery(this.tableName, this);
     }
 
     /**

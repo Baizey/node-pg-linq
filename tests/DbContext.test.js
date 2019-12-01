@@ -2,6 +2,7 @@
 import should from "should";
 import 'regenerator-runtime';
 import DbContext from "../src";
+
 const {Pool, Client} = require('pg');
 
 /**
@@ -9,11 +10,11 @@ const {Pool, Client} = require('pg');
  * @returns {Promise<void>}
  */
 const createEmptyTable = async (context) => {
+    await context.dropTable();
     const create = context.create().ignoreIfExists();
     create.serial('id').primary();
     create.text('name').nullable(false);
     await create.run();
-    await context.delete().run();
 };
 /**
  * @param {DbContext} context
@@ -68,7 +69,7 @@ describe("DbContext", function () {
 
     it('get update query', () => {
         const context = new DbContext('table');
-        context.update().toString().should.equal('UPDATE table SET  ');
+        context.update().toString().should.equal('UPDATE table SET ');
     });
 
     it('get insert query', () => {
