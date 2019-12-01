@@ -2,9 +2,11 @@
  An npm package to create Postgres queries in a linq-ish way
 
 # Compatible
-node 12.\*, 13.\*, earlier versions may be supported, but not tested
+node 12.\*, 13.\*, other versions may be supported, but aren't tested
 
-Postgres 9.6 and onwards
+PostgreSQL 9.6, 10, 11, 12, other versions may be supported, but aren't tested
+
+Feature implementations aim towards being complete for lowest PostgreSQL version, newer features will not be supported
 
 # Usage
 
