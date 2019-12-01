@@ -2,6 +2,7 @@
 import should from "should";
 import 'regenerator-runtime';
 import DbContext from "../src";
+import Mock from "./mock/Mock";
 
 /**
  * @param {DbContext} context
@@ -16,22 +17,29 @@ const createEmptyTable = async (context) => {
 };
 
 describe("DbContext", function () {
-    //this.timeout(10000);
-    it('connect and use client', async function () {
-        const name = 'DbContextClientTests';
-        const context = new DbContext(name).usingClient();
-        await createEmptyTable(context);
-        context.end();
-        true.should.True();
-    }).timeout(10000);
 
-    it('connect and use pool', async function () {
-        const name = 'DbContextPoolTests';
-        const context = new DbContext(name).usingPool();
-        await createEmptyTable(context);
-        context.end();
-        true.should.True();
-    }).timeout(10000);
+    describe("queries", () => {
+        const context = new DbContext('DbContextTests');
+        beforeEach(async () => {
+            context.using(() => undefined);
+        });
+        afterEach(async () => {
+            await context.dropTable();
+            context.end();
+        });
+
+        it('connect and use client', async function () {
+            context.usingClient();
+            await createEmptyTable(context);
+            true.should.True();
+        });
+
+        it('connect and use pool', async function () {
+            context.usingPool();
+            await createEmptyTable(context);
+            true.should.True();
+        });
+    });
 
     it('get select query', () => {
         const context = new DbContext('table');
