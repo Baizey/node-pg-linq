@@ -4,6 +4,11 @@ import InsertQuery from "./query/InsertQuery";
 import DeleteQuery from "./query/DeleteQuery";
 import UpdateQuery from "./query/UpdateQuery";
 
+/*
+- run: npm run release
+- run: git push "https://${{secrets.user_name}}:${{secrets.github_registry_token}}@github.com/${{secrets.user_name}}/node-pg-linq.git" HEAD:master_temp
+ */
+
 export default class DbContext {
     /**
      * @param {function(sql:string, params:*[]):Promise<{
