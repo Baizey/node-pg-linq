@@ -1,50 +1,33 @@
-const pgtest = require('pgtest');
+import DbContext from "../../src";
+
+const {Client} = require('pg');
 
 let mockInstance = null;
 
 export default class Mock {
-    constructor() {
-    }
-
-    static get instance() {
-        return mockInstance ? mockInstance : (mockInstance = new Mock());
-    }
-
-    static check() {
-        return pgtest.check();
-    }
-
     /**
-     * @param {string} sql
-     * @param {{
-     *     rowCount: int,
-     *     rows: *[]
-     * }} data
-     * @returns {*|void}
+     * @param {DbContext} context
+     * @returns {Promise<PG.Client>}
      */
-    static expect(sql, data) {
-        return pgtest.expect(sql).returning(null, data);
-    }
-
-    static get mock() {
-        return Mock.instance.mock();
-    }
-
-    /**
-     * @returns {Promise<{
-     *     finish: function,
-     *     client: Client,
-     *     expect: function(string):returning
-     * }>}
-     */
-    async mock() {
-        return await new Promise((resolve) => {
-            pgtest.connect('testdb', (err, client, done) => {
-                resolve({
-                    client: client,
-                    finish: () => done(),
-                });
-            });
+    static client(context) {
+        return new Promise(async r => {
+            const client = new Client();
+            client.connect();
+            context.usingClient(client);
+            const create = context.create().ignoreIfExists();
+            create.int('id').nullable(false);
+            create.text('name').nullable(false);
+            await create.run();
+            r(client);
         });
     }
+
+    static finish(context, client) {
+        return new Promise(async r => {
+            await context.dropTable();
+            client.end();
+            r();
+        })
+    }
+
 }
