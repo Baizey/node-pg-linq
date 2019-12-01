@@ -25,7 +25,7 @@ export default class Query {
      * @param {*[]} variables
      * @returns {Query}
      */
-    where(statement, variables = []) {
+    where(statement, ...variables) {
         this._where = statement;
         this._variables = variables;
         return this;
