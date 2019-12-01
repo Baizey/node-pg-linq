@@ -8,6 +8,7 @@ export class QueryJoiner {
         this._type = 'LEFT';
         this._query = query;
         this._as = undefined;
+        this._isNatual = false;
     }
 
     /**
@@ -15,6 +16,7 @@ export class QueryJoiner {
      */
     get fullOuter() {
         this._type = 'FULL OUTER';
+        this._isNatual = false;
         return this;
     }
 
@@ -23,6 +25,7 @@ export class QueryJoiner {
      */
     get leftOuter() {
         this._type = 'LEFT OUTER';
+        this._isNatual = false;
         return this;
     }
 
@@ -31,6 +34,7 @@ export class QueryJoiner {
      */
     get rightOuter() {
         this._type = 'RIGHT OUTER';
+        this._isNatual = false;
         return this;
     }
 
@@ -39,6 +43,34 @@ export class QueryJoiner {
      */
     get left() {
         this._type = 'LEFT';
+        this._isNatual = false;
+        return this;
+    }
+
+    /**
+     * @returns {QueryJoiner}
+     */
+    get naturalLeft() {
+        this._type = 'NATURAL LEFT';
+        this._isNatual = true;
+        return this;
+    }
+
+    /**
+     * @returns {QueryJoiner}
+     */
+    get naturalRight() {
+        this._type = 'NATURAL RIGHT';
+        this._isNatual = true;
+        return this;
+    }
+
+    /**
+     * @returns {QueryJoiner}
+     */
+    get naturalInner() {
+        this._type = 'NATURAL INNER';
+        this._isNatual = true;
         return this;
     }
 
@@ -47,6 +79,7 @@ export class QueryJoiner {
      */
     get right() {
         this._type = 'RIGHT';
+        this._isNatual = false;
         return this;
     }
 
@@ -55,6 +88,7 @@ export class QueryJoiner {
      */
     get inner() {
         this._type = 'INNER';
+        this._isNatual = false;
         return this;
     }
 
@@ -79,6 +113,6 @@ export class QueryJoiner {
 
     toString() {
         const as = this._as ? ` AS ${this._as}` : '';
-        return `${this._type} JOIN ${this._table}${as} ON (${this._statement})`
+        return `${this._type} JOIN ${this._table}${as}${this._isNatual ? '' : ` ON (${this._statement})`}`;
     }
 }

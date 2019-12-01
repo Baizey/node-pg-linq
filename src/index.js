@@ -4,6 +4,13 @@ import InsertQuery from "./query/InsertQuery";
 import DeleteQuery from "./query/DeleteQuery";
 import UpdateQuery from "./query/UpdateQuery";
 
+const {Pool, Client} = require('pg');
+
+/*
+- run: npm run release
+- run: git push "https://${{secrets.user_name}}:${{secrets.github_registry_token}}@github.com/${{secrets.user_name}}/node-pg-linq.git" HEAD:master_temp
+ */
+
 export default class DbContext {
     /**
      * @param {function(sql:string, params:*[]):Promise<{
@@ -23,7 +30,9 @@ export default class DbContext {
      * @param {PG.Pool|Pool} pool
      * @returns {DbContext}
      */
-    usingPool(pool) {
+    usingPool(pool = undefined) {
+        if (!pool) pool = new Pool();
+        this._conn = pool;
         this._usage = async (sql, params) => {
             const client = await pool.connect();
             const resp = await client.query({
@@ -40,7 +49,12 @@ export default class DbContext {
      * @param {PG.Client|Client} client
      * @returns {DbContext}
      */
-    usingClient(client) {
+    usingClient(client = undefined) {
+        if (!client) {
+            client = new Client();
+            client.connect();
+        }
+        this._conn = client;
         this._usage = (sql, params) => {
             return new Promise((resolve, reject) => {
                 client.query(sql, params, function (err, data) {
@@ -53,10 +67,18 @@ export default class DbContext {
     }
 
     /**
+     * @returns {PG.Client|PG.Pool|undefined}
+     */
+    get connection() {
+        return this._conn;
+    }
+
+    /**
      * @param {string} tableName
      */
     constructor(tableName) {
         this.tableName = tableName;
+        this._conn = undefined;
         this._usage = async (sql, params) => {
         };
     }
@@ -136,6 +158,11 @@ export default class DbContext {
      */
     delete() {
         return new DeleteQuery(this.tableName, this);
+    }
+
+    end() {
+        const conn = this.connection;
+        if (conn) conn.end();
     }
 
     /**

@@ -3,8 +3,6 @@ import should from "should";
 import 'regenerator-runtime';
 import DbContext from "../src";
 
-const {Pool, Client} = require('pg');
-
 /**
  * @param {DbContext} context
  * @returns {Promise<void>}
@@ -16,46 +14,31 @@ const createEmptyTable = async (context) => {
     create.text('name').nullable(false);
     await create.run();
 };
-/**
- * @param {DbContext} context
- * @returns {PG.Client}
- */
-const addClient = context => {
-    const client = new Client();
-    client.connect();
-    context.usingClient(client);
-    return client;
-};
-
-/**
- * @param {DbContext} context
- * @returns {PG.Pool}
- */
-const addPool = context => {
-    const pool = new Pool();
-    context.usingPool(pool);
-    return pool;
-};
 
 describe("DbContext", function () {
-    //this.timeout(10000);
-    it('connect and use client', async function () {
-        const name = 'pg_linq_test_table_client';
-        const context = new DbContext(name);
-        const conn = addClient(context);
-        await createEmptyTable(context);
-        conn.end();
-        true.should.True();
-    }).timeout(10000);
 
-    it('connect and use pool', async function () {
-        const name = 'pg_linq_test_table_pool';
-        const context = new DbContext(name);
-        const conn = addPool(context);
-        await createEmptyTable(context);
-        conn.end();
-        true.should.True();
-    }).timeout(10000);
+    describe("queries", () => {
+        const context = new DbContext('DbContextTests');
+        beforeEach(async () => {
+            context.using(() => undefined);
+        });
+        afterEach(async () => {
+            await context.dropTable();
+            context.end();
+        });
+
+        it('connect and use client', async function () {
+            context.usingClient();
+            await createEmptyTable(context);
+            true.should.True();
+        });
+
+        it('connect and use pool', async function () {
+            context.usingPool();
+            await createEmptyTable(context);
+            true.should.True();
+        });
+    });
 
     it('get select query', () => {
         const context = new DbContext('table');

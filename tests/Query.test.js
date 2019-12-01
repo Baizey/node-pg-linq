@@ -52,21 +52,19 @@ describe("Query", () => {
         });
     });
     describe('join', () => {
-        let client1, context1 = new DbContext('JoinQueryTest1');
-        let client2, context2 = new DbContext('JoinQueryTest2');
+        const context1 = new DbContext('JoinQueryTest1'),
+            context2 = new DbContext('JoinQueryTest2');
 
         beforeEach(async () => {
-            client1 = await Mock.client(context1);
-            client2 = await Mock.client(context2, create => {
+            await Mock.client(context1);
+            await Mock.client(context2, create => {
                 create.int('id2').nullable(false);
                 create.text('name2').nullable(false);
             });
-            await context1.delete().run();
-            await context2.delete().run();
         });
         afterEach(async () => {
-            await Mock.finish(context1, client1);
-            await Mock.finish(context2, client2);
+            await Mock.finish(context1);
+            await Mock.finish(context2);
         });
 
         it('basic', async () => {
@@ -74,9 +72,8 @@ describe("Query", () => {
             await context2.insert({id2: 1, name2: 'Bob'}).run();
 
             const query = context1.select().as('a').join(context2.tableName, opt => opt.as('b').right.on((a, b) => a.id === b.id2));
-            const sql = query.toString();
             (await query.all())
-                .should.deepEqual([{ id: 1, name: 'John', id2: 1, name2: 'Bob' }]);
+                .should.deepEqual([{id: 1, name: 'John', id2: 1, name2: 'Bob'}]);
         });
     })
 });
