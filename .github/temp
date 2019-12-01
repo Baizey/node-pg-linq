@@ -1,0 +1,2 @@
+- run: npm run release
+- run: git push "https://${{secrets.user_name}}:${{secrets.github_registry_token}}@github.com/${{secrets.user_name}}/node-pg-linq.git" HEAD:master_temp
