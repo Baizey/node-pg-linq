@@ -27,7 +27,7 @@ export default class Query {
      */
     where(statement, ...variables) {
         this._where = statement;
-        this._variables = variables;
+        this._variables = Array.isArray(variables) ? variables : [variables];
         return this;
     }
 

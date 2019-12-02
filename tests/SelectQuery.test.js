@@ -126,5 +126,12 @@ describe("SelectQuery", () => {
             (await context.select(['SUM(id) as sum', 'name']).groupBy('name').all())
                 .should.deepEqual([{sum: '7', name: 'Bob'}]);
         });
+        it('groupBy multiple', async () => {
+            await context.insert({name: 'Bob', id: 2}).run();
+            await context.insert({name: 'Bob', id: 2}).run();
+            await context.insert({name: 'Bob', id: 2}).run();
+            (await context.select(['SUM(id) as sum', 'name']).groupBy('name', 'id').all())
+                .should.deepEqual([{sum: '6', name: 'Bob'}]);
+        });
     });
 });

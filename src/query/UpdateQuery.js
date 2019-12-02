@@ -25,6 +25,7 @@ export default class UpdateQuery extends Query {
      * @returns {UpdateQuery}
      */
     where(statement, ...variables) {
+        variables = Array.isArray(variables) ? variables : [variables];
         super.where(statement, ...variables);
         return this;
     }

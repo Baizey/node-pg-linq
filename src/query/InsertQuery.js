@@ -26,6 +26,7 @@ export default class InsertQuery extends Query {
      * @returns {InsertQuery}
      */
     where(statement, ...variables) {
+        variables = Array.isArray(variables) ? variables : [variables];
         super.where(statement, variables);
         return this;
     }
