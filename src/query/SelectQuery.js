@@ -32,17 +32,19 @@ export default class SelectQuery extends Query {
      * @returns {SelectQuery}
      */
     where(statement, ...variables) {
+        variables = Array.isArray(variables) ? variables : [variables];
         super.where(statement, ...variables);
         return this;
     }
 
     /**
      * ASC is default in postgres, so we have it as default as well
-     * @param {string} column
+     * @param {string} columns
      * @returns {SelectQuery}
      */
-    groupBy(...column) {
-        this._grouping = column;
+    groupBy(...columns) {
+        columns = Array.isArray(columns) ? columns : [columns];
+        this._grouping = columns;
         return this;
     }
 
@@ -52,6 +54,7 @@ export default class SelectQuery extends Query {
      * @returns {SelectQuery}
      */
     having(statement, ...variables) {
+        variables = Array.isArray(variables) ? variables : [variables];
         this._having = ' HAVING ' + super._functionToSqlQuery(statement, variables);
         return this;
     }
