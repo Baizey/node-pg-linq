@@ -39,7 +39,7 @@ export default class SelectQuery extends Query {
 
     /**
      * ASC is default in postgres, so we have it as default as well
-     * @param {string} columns
+     * @param {*} columns
      * @returns {SelectQuery}
      */
     groupBy(...columns) {
