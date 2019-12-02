@@ -10,17 +10,6 @@ export default class DeleteQuery extends Query {
     }
 
     /**
-     * @param {function():boolean|function(*):boolean|function(*,*):boolean|function(*,*,*):boolean} statement
-     * @param {*} variables
-     * @returns {DeleteQuery}
-     */
-    where(statement, ...variables) {
-        variables = Array.isArray(variables) ? variables : [variables];
-        super.where(statement, ...variables);
-        return this;
-    }
-
-    /**
      * @returns {string}
      */
     toString() {

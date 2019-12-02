@@ -20,17 +20,6 @@ export default class UpdateQuery extends Query {
     }
 
     /**
-     * @param {function():boolean|function(*):boolean|function(*,*):boolean|function(*,*,*):boolean} statement
-     * @param {*} variables
-     * @returns {UpdateQuery}
-     */
-    where(statement, ...variables) {
-        variables = Array.isArray(variables) ? variables : [variables];
-        super.where(statement, ...variables);
-        return this;
-    }
-
-    /**
      * @returns {string}
      */
     get _generateUpdateSql() {

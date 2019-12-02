@@ -23,7 +23,7 @@ export default class Query {
     /**
      * @param {function():boolean|function(*):boolean|function(*,*):boolean|function(*,*,*):boolean} statement
      * @param {*} variables
-     * @returns {Query}
+     * @returns {InsertQuery|UpdateQuery|DeleteQuery|SelectQuery|Query}
      */
     where(statement, ...variables) {
         this._where = statement;
@@ -34,7 +34,7 @@ export default class Query {
     /**
      * @param {string} table
      * @param {function(e:QueryJoiner)} options
-     * @returns {Query}
+     * @returns {InsertQuery|UpdateQuery|DeleteQuery|SelectQuery|Query}
      */
     join(table, options = undefined) {
         const join = new QueryJoiner(table, this);
@@ -45,7 +45,7 @@ export default class Query {
 
     /**
      * @param {string} name
-     * @returns {Query}
+     * @returns {InsertQuery|UpdateQuery|DeleteQuery|SelectQuery|Query}
      */
     as(name) {
         this._as = name;
