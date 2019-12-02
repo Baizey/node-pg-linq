@@ -1,4 +1,5 @@
 import Query from "./Query.js";
+import {QueryJoiner} from "./QueryJoiner";
 
 export default class UpdateQuery extends Query {
     /**
@@ -7,6 +8,26 @@ export default class UpdateQuery extends Query {
      */
     constructor(table, context) {
         super(table, context);
+    }
+
+    /**
+     * @param {function():boolean|function(*):boolean|function(*,*):boolean|function(*,*,*):boolean} statement
+     * @param {*} variables
+     * @returns {UpdateQuery}
+     */
+    where(statement, ...variables) {
+        super.where(statement, variables);
+        return this;
+    }
+
+    /**
+     * @param {string} table
+     * @param {function(e:QueryJoiner)} options
+     * @returns {UpdateQuery}
+     */
+    join(table, options = undefined) {
+        super.join(table, options);
+        return this;
     }
 
     /**

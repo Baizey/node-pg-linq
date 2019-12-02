@@ -22,19 +22,19 @@ export default class Query {
 
     /**
      * @param {function():boolean|function(*):boolean|function(*,*):boolean|function(*,*,*):boolean} statement
-     * @param {*} variables
-     * @returns {InsertQuery|UpdateQuery|DeleteQuery|SelectQuery|Query}
+     * @param {*[]} variables
+     * @returns {Query}
      */
-    where(statement, ...variables) {
+    where(statement, variables) {
         this._where = statement;
-        this._variables = Array.isArray(variables) ? variables : [variables];
+        this._variables = variables;
         return this;
     }
 
     /**
      * @param {string} table
      * @param {function(e:QueryJoiner)} options
-     * @returns {InsertQuery|UpdateQuery|DeleteQuery|SelectQuery|Query}
+     * @returns {Query}
      */
     join(table, options = undefined) {
         const join = new QueryJoiner(table, this);
@@ -45,7 +45,7 @@ export default class Query {
 
     /**
      * @param {string} name
-     * @returns {InsertQuery|UpdateQuery|DeleteQuery|SelectQuery|Query}
+     * @returns {Query}
      */
     as(name) {
         this._as = name;
