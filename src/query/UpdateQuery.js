@@ -11,6 +11,15 @@ export default class UpdateQuery extends Query {
     }
 
     /**
+     * @param {string} name
+     * @returns {UpdateQuery}
+     */
+    as(name) {
+        super.as(name);
+        return this;
+    }
+
+    /**
      * @param {function():boolean|function(*):boolean|function(*,*):boolean|function(*,*,*):boolean} statement
      * @param {*} variables
      * @returns {UpdateQuery}

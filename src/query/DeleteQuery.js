@@ -10,6 +10,15 @@ export default class DeleteQuery extends Query {
     }
 
     /**
+     * @param {string} name
+     * @returns {DeleteQuery}
+     */
+    as(name) {
+        super.as(name);
+        return this;
+    }
+
+    /**
      * @param {function():boolean|function(*):boolean|function(*,*):boolean|function(*,*,*):boolean} statement
      * @param {*} variables
      * @returns {DeleteQuery}

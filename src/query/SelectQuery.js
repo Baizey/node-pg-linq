@@ -18,6 +18,15 @@ export default class SelectQuery extends Query {
     }
 
     /**
+     * @param {string} name
+     * @returns {SelectQuery}
+     */
+    as(name) {
+        super.as(name);
+        return this;
+    }
+
+    /**
      * @param {function():boolean|function(*):boolean|function(*,*):boolean|function(*,*,*):boolean} statement
      * @param {*} variables
      * @returns {SelectQuery}

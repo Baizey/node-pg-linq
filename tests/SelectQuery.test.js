@@ -9,47 +9,47 @@ describe("SelectQuery", () => {
     describe('sql ', () => {
         const table = new DbContext('table');
         it('limit', () => {
-            table.select().limit(5).toString().should.equal('SELECT * FROM table LIMIT 5');
+            table.select().limit(5).toString().should.equal('SELECT * FROM table AS table LIMIT 5');
         });
         it('offset', () => {
-            table.select().offset(5).toString().should.equal('SELECT * FROM table OFFSET 5');
+            table.select().offset(5).toString().should.equal('SELECT * FROM table AS table OFFSET 5');
         });
         it('limit and offset', () => {
-            table.select().offset(4).limit(4).toString().should.equal('SELECT * FROM table LIMIT 4 OFFSET 4');
+            table.select().offset(4).limit(4).toString().should.equal('SELECT * FROM table AS table LIMIT 4 OFFSET 4');
         });
         describe("orderBy", () => {
             it('asc', () => {
                 table.select()
                     .orderBy('id', true)
-                    .toString().should.equal('SELECT * FROM table ORDER BY id ASC');
+                    .toString().should.equal('SELECT * FROM table AS table ORDER BY id ASC');
             });
             it('desc', () => {
                 table.select()
                     .orderBy('id', false)
-                    .toString().should.equal('SELECT * FROM table ORDER BY id DESC');
+                    .toString().should.equal('SELECT * FROM table AS table ORDER BY id DESC');
             });
             it('multiple', () => {
                 table.select()
                     .orderBy('id')
                     .orderBy('name')
-                    .toString().should.equal('SELECT * FROM table ORDER BY id ASC, name ASC');
+                    .toString().should.equal('SELECT * FROM table AS table ORDER BY id ASC, name ASC');
             });
         });
         describe("groupBy", () => {
             it('asc', () => {
                 table.select()
                     .groupBy('id')
-                    .toString().should.equal('SELECT * FROM table GROUP BY id');
+                    .toString().should.equal('SELECT * FROM table AS table GROUP BY id');
             });
             it('desc', () => {
                 table.select()
                     .groupBy('id DESC')
-                    .toString().should.equal('SELECT * FROM table GROUP BY id DESC');
+                    .toString().should.equal('SELECT * FROM table AS table GROUP BY id DESC');
             });
             it('multiple', () => {
                 table.select()
                     .groupBy(['id', 'name'])
-                    .toString().should.equal('SELECT * FROM table GROUP BY id, name');
+                    .toString().should.equal('SELECT * FROM table AS table GROUP BY id, name');
             });
         });
 
@@ -57,22 +57,22 @@ describe("SelectQuery", () => {
             it('all', () => {
                 table.select()
                     .distinct()
-                    .toString().should.equal('SELECT DISTINCT * FROM table');
+                    .toString().should.equal('SELECT DISTINCT * FROM table AS table');
             });
             it('one', () => {
                 table.select()
                     .distinct('id')
-                    .toString().should.equal('SELECT DISTINCT ON (id) id, * FROM table');
+                    .toString().should.equal('SELECT DISTINCT ON (id) id, * FROM table AS table');
             });
             it('combo', () => {
                 table.select(['name'])
                     .distinct('id')
-                    .toString().should.equal('SELECT DISTINCT ON (id) id, name FROM table');
+                    .toString().should.equal('SELECT DISTINCT ON (id) id, name FROM table AS table');
             });
             it('override', () => {
                 table.select(['id'])
                     .distinct('id')
-                    .toString().should.equal('SELECT DISTINCT ON (id) id, * FROM table');
+                    .toString().should.equal('SELECT DISTINCT ON (id) id, * FROM table AS table');
             });
         });
     });

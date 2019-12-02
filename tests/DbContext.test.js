@@ -42,22 +42,22 @@ describe("DbContext", function () {
 
     it('get select query', () => {
         const context = new DbContext('table');
-        context.select().toString().should.equal('SELECT * FROM table');
+        context.select().toString().should.equal('SELECT * FROM table AS table');
     });
 
     it('get delete query', () => {
         const context = new DbContext('table');
-        context.delete().toString().should.equal('DELETE FROM table');
+        context.delete().toString().should.equal('DELETE FROM table AS table');
     });
 
     it('get update query', () => {
         const context = new DbContext('table');
-        context.update().toString().should.equal('UPDATE table SET ');
+        context.update().toString().should.equal('UPDATE table AS table SET ');
     });
 
     it('get insert query', () => {
         const context = new DbContext('table');
-        context.insert().toString().should.equal('INSERT INTO table () VALUES ()');
+        context.insert().toString().should.equal('INSERT INTO table AS table () VALUES ()');
     });
 
     it('get create query', () => {
