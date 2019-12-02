@@ -7,6 +7,7 @@ export default class SelectQuery extends Query {
      */
     constructor(table, context) {
         super(table, context);
+        this._having = '';
         this._columns = [];
         this._limit = 0;
         this._offset = 0;
@@ -31,18 +32,27 @@ export default class SelectQuery extends Query {
      * @returns {SelectQuery}
      */
     where(statement, ...variables) {
-        super.where(statement, variables);
+        super.where(statement, ...variables);
         return this;
     }
 
     /**
      * ASC is default in postgres, so we have it as default as well
      * @param {string} column
-     * @param {boolean} ascending
      * @returns {SelectQuery}
      */
-    groupBy(column, ascending = true) {
-        this._grouping.push(`${column}${ascending ? '' : ' DESC'}`);
+    groupBy(...column) {
+        this._grouping = column;
+        return this;
+    }
+
+    /**
+     * @param {function():boolean|function(*):boolean|function(*,*):boolean|function(*,*,*):boolean} statement
+     * @param {*} variables
+     * @returns {SelectQuery}
+     */
+    having(statement, ...variables) {
+        this._having = ' HAVING ' + super._functionToSqlQuery(statement, variables);
         return this;
     }
 
@@ -107,8 +117,9 @@ export default class SelectQuery extends Query {
         const order = (this._order.length && ` ORDER BY ${this._order.join(', ')}`) || '';
         const group = (this._grouping.length && ` GROUP BY ${this._grouping.join(', ')}`) || '';
         const distinct = this._distinct ? ' DISTINCT' : '';
+        this._having = this._having || '';
 
-        return `SELECT${distinct}${this._generateSelectSql} FROM ${this._tableName}${this._generateFilterSql}${group}${order}${limit}${offset}`;
+        return `SELECT${distinct}${this._generateSelectSql} FROM ${this._tableName}${this._generateFilterSql}${group}${this._having}${order}${limit}${offset}`;
     }
 
     /**
