@@ -77,31 +77,31 @@ describe("CreateQuery", () => {
             const query = new CreateTableQuery('name', undefined);
             const id = query.int('id');
             const name = query.text('name');
-            query.primaryGroup([id, name]);
+            query.setPrimaryGroup([id, name]);
             query.toString().should.equal('CREATE TABLE name (id int, name text, PRIMARY KEY (id, name))');
         });
         it('unique keys', () => {
             const query = new CreateTableQuery('name', undefined);
             const id = query.int('id');
             const name = query.text('name');
-            query.uniqueGroup([id, name]);
+            query.addUniqueGroup([id, name]);
             query.toString().should.equal('CREATE TABLE name (id int, name text, UNIQUE (id, name))');
         });
         it('multiple unique keys', () => {
             const query = new CreateTableQuery('name', undefined);
             const id = query.int('id');
             const name = query.text('name');
-            query.uniqueGroup([id, name]);
-            query.uniqueGroup([id]);
-            query.uniqueGroup([name]);
+            query.addUniqueGroup([id, name]);
+            query.addUniqueGroup([id]);
+            query.addUniqueGroup([name]);
             query.toString().should.equal('CREATE TABLE name (id int, name text, UNIQUE (id, name),, UNIQUE (id),, UNIQUE (name))');
         });
         it('both unique and primary', () => {
             const query = new CreateTableQuery('name', undefined);
             const id = query.int('id');
             const name = query.text('name');
-            query.primaryGroup([id]);
-            query.uniqueGroup([name]);
+            query.setPrimaryGroup([id]);
+            query.addUniqueGroup([name]);
             query.toString().should.equal('CREATE TABLE name (id int, name text, PRIMARY KEY (id), UNIQUE (name))');
         });
     });

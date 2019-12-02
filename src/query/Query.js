@@ -16,8 +16,18 @@ export default class Query {
         this._where = null;
         this._variables = [];
         this._parameters = {};
+        this._tables = [];
         this._context = context;
         this._joins = [];
+    }
+
+    /**
+     * @param {string|string[]} tables
+     * @returns {Query}
+     */
+    from(tables) {
+        this._tables = Array.isArray(tables) ? tables : [tables];
+        return this;
     }
 
     /**
@@ -52,9 +62,10 @@ export default class Query {
         return this;
     }
 
-    get _tableName() {
-        const as = this._as ? ` AS ${this._as}` : '';
-        return `${this._table}${as}`;
+    get _tableNames() {
+        const first = this._as ? ` AS ${this._as}` : '';
+        const others = (this._tables.length > 0 ? ', ' : '') + this._tables.join(', ');
+        return `${this._table}${first}${others}`;
     }
 
     /**

@@ -1,4 +1,5 @@
 import {Column} from "./Column";
+import Constraint from "./Constraint";
 
 const Type = {
     bool: 'boolean',
@@ -26,7 +27,7 @@ export default class CreateTableQuery {
         this._table = tableName;
         this._columns = [];
         this._uniqueGroups = [];
-        this._primaryGroup = [];
+        this._primaryGroup = undefined;
         this._context = context;
         this._ignoreExists = false;
     }
@@ -55,11 +56,27 @@ export default class CreateTableQuery {
     }
 
     /**
+     * @returns {Constraint[]}
+     */
+    get constraints() {
+        const result = [];
+        this.columns.forEach(column => {
+            const primary = column.primaryConstraint;
+            if (primary) result.push(primary);
+            const unique = column.uniqueConstraint;
+            if (unique) result.push(unique);
+        });
+        this._uniqueGroups.forEach(e => result.push(e));
+        if (this._primaryGroup) result.push(this._primaryGroup);
+        return result;
+    }
+
+    /**
      * @param {Column[]} columns
      * @returns {CreateTableQuery}
      */
-    uniqueGroup(columns) {
-        if (columns) this._uniqueGroups.push(columns);
+    addUniqueGroup(columns) {
+        if (columns) this._uniqueGroups.push(new Constraint(Constraint.types.unique, columns));
         return this;
     }
 
@@ -67,8 +84,8 @@ export default class CreateTableQuery {
      * @param {Column[]} columns
      * @returns {CreateTableQuery}
      */
-    primaryGroup(columns) {
-        this._primaryGroup = columns || [];
+    setPrimaryGroup(columns) {
+        this._primaryGroup = (columns && (new Constraint(Constraint.types.primary, columns))) || undefined;
         return this;
     }
 
@@ -135,13 +152,11 @@ export default class CreateTableQuery {
      * @returns {string}
      */
     toString() {
-        const primaryGroup = (
-            this._primaryGroup.length &&
-            `, PRIMARY KEY (${this._primaryGroup.map(e => e._name).join(', ')})`
-        ) || '';
-        const uniqueGroups = (
-            this._uniqueGroups.length &&
-            this._uniqueGroups.map(e => `, UNIQUE (${e.map(e => e._name).join(', ')})`)
+        const primaryGroup = (this._primaryGroup &&
+            `, CONSTRAINT ${this._primaryGroup.name} PRIMARY KEY (${this._primaryGroup.columnNames.join(', ')})`)
+            || '';
+        const uniqueGroups = (this._uniqueGroups.length &&
+            this._uniqueGroups.map(e => `, CONSTRAINT ${e.name} UNIQUE (${e.columnNames.join(', ')})`)
         ) || '';
         const columns = this._columns.join(', ');
         const ignoreExists = (this._ignoreExists && ' IF NOT EXISTS') || '';

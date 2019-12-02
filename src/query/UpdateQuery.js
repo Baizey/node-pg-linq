@@ -60,7 +60,7 @@ export default class UpdateQuery extends Query {
      * @returns {string}
      */
     toString() {
-        return `UPDATE ${this._tableName} SET ${this._generateUpdateSql}${this._generateFilterSql}`;
+        return `UPDATE ${this._tableNames} SET ${this._generateUpdateSql}${this._generateFilterSql}`;
     }
 
     /**

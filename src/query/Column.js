@@ -1,3 +1,5 @@
+import Constraint from "./Constraint";
+
 export class Column {
     /**
      * @param {string} name
@@ -12,6 +14,20 @@ export class Column {
         this._isSerial = false;
         this._defaultValue = undefined;
         this._referenceValue = undefined;
+    }
+
+    /**
+     * @returns {Constraint}
+     */
+    get uniqueConstraint() {
+        return this.isUnique ? new Constraint(Constraint.types.unique, this) : undefined;
+    }
+
+    /**
+     * @returns {Constraint}
+     */
+    get primaryConstraint() {
+        return this.isPrimaryKey ? new Constraint(Constraint.types.primary, this) : undefined;
     }
 
     get type() {
@@ -104,8 +120,8 @@ export class Column {
         const nullable = (!this._isNullable && ' NOT NULL') || '';
         const defaultValue = ((typeof this._defaultValue !== 'undefined') && ` DEFAULT ${this._defaultValue}`) || '';
         const foreign = (this._referenceValue && ` REFERENCES ${this._referenceValue}`) || '';
-        const unique = (this._isUnique && ` UNIQUE`) || '';
-        const primary = (this._isPrimary && ` PRIMARY KEY`) || '';
+        const unique = (this._isUnique && `CONSTRAINT ${this.uniqueConstraint.name} UNIQUE`) || '';
+        const primary = (this._isPrimary && `CONSTRAINT ${this.primaryConstraint.name} PRIMARY KEY`) || '';
         const serial = (this._isSerial && ' SERIAL') || '';
         return `${this._name} ${this._type}${nullable}${defaultValue}${foreign}${unique}${primary}${serial}`;
     }

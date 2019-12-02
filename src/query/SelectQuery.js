@@ -140,7 +140,7 @@ export default class SelectQuery extends Query {
         const distinct = this._distinct ? ' DISTINCT' : '';
         this._having = this._having || '';
 
-        return `SELECT${distinct}${this._generateSelectSql} FROM ${this._tableName}${this._generateFilterSql}${group}${this._having}${order}${limit}${offset}`;
+        return `SELECT${distinct}${this._generateSelectSql} FROM ${this._tableNames}${this._generateFilterSql}${group}${this._having}${order}${limit}${offset}`;
     }
 
     /**
