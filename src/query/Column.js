@@ -120,8 +120,8 @@ export class Column {
         const nullable = (!this._isNullable && ' NOT NULL') || '';
         const defaultValue = ((typeof this._defaultValue !== 'undefined') && ` DEFAULT ${this._defaultValue}`) || '';
         const foreign = (this._referenceValue && ` REFERENCES ${this._referenceValue}`) || '';
-        const unique = (this._isUnique && `CONSTRAINT ${this.uniqueConstraint.name} UNIQUE`) || '';
-        const primary = (this._isPrimary && `CONSTRAINT ${this.primaryConstraint.name} PRIMARY KEY`) || '';
+        const unique = (this._isUnique && ` CONSTRAINT ${this.uniqueConstraint.name} UNIQUE`) || '';
+        const primary = (this._isPrimary && ` CONSTRAINT ${this.primaryConstraint.name} PRIMARY KEY`) || '';
         const serial = (this._isSerial && ' SERIAL') || '';
         return `${this._name} ${this._type}${nullable}${defaultValue}${foreign}${unique}${primary}${serial}`;
     }
