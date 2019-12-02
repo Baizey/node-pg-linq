@@ -48,7 +48,7 @@ describe("SelectQuery", () => {
             });
             it('multiple', () => {
                 table.select()
-                    .groupBy('id', 'name')
+                    .groupBy(['id', 'name'])
                     .toString().should.equal('SELECT * FROM table GROUP BY id, name');
             });
         });

@@ -1,4 +1,5 @@
 import Query from "./Query.js";
+import {QueryJoiner} from "./QueryJoiner";
 
 export default class SelectQuery extends Query {
     /**
@@ -17,6 +18,26 @@ export default class SelectQuery extends Query {
     }
 
     /**
+     * @param {function():boolean|function(*):boolean|function(*,*):boolean|function(*,*,*):boolean} statement
+     * @param {*} variables
+     * @returns {SelectQuery}
+     */
+    where(statement, ...variables) {
+        super.where(statement, variables);
+        return this;
+    }
+
+    /**
+     * @param {string} table
+     * @param {function(e:QueryJoiner)} options
+     * @returns {SelectQuery}
+     */
+    join(table, options = undefined) {
+        super.join(table, options);
+        return this;
+    }
+
+    /**
      * @param {string[]} columns
      * @returns {SelectQuery}
      */
@@ -28,12 +49,11 @@ export default class SelectQuery extends Query {
 
     /**
      * ASC is default in postgres, so we have it as default as well
-     * @param {*} columns
+     * @param {string|string[]} columns
      * @returns {SelectQuery}
      */
-    groupBy(...columns) {
-        columns = Array.isArray(columns) ? columns : [columns];
-        this._grouping = columns;
+    groupBy(columns) {
+        this._grouping = Array.isArray(columns) ? columns : [columns];
         return this;
     }
 

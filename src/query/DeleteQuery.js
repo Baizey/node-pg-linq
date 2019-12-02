@@ -10,6 +10,26 @@ export default class DeleteQuery extends Query {
     }
 
     /**
+     * @param {function():boolean|function(*):boolean|function(*,*):boolean|function(*,*,*):boolean} statement
+     * @param {*} variables
+     * @returns {DeleteQuery}
+     */
+    where(statement, ...variables) {
+        super.where(statement, variables);
+        return this;
+    }
+
+    /**
+     * @param {string} table
+     * @param {function(e:QueryJoiner)} options
+     * @returns {DeleteQuery}
+     */
+    join(table, options = undefined) {
+        super.join(table, options);
+        return this;
+    }
+
+    /**
      * @returns {string}
      */
     toString() {
