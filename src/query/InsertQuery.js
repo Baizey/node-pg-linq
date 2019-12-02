@@ -11,6 +11,15 @@ export default class InsertQuery extends Query {
     }
 
     /**
+     * @param {string|string[]} tables
+     * @returns {InsertQuery}
+     */
+    from(tables) {
+        super.from(tables);
+        return this;
+    }
+
+    /**
      * @param {string} name
      * @returns {InsertQuery}
      */

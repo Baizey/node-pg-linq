@@ -11,6 +11,15 @@ export default class UpdateQuery extends Query {
     }
 
     /**
+     * @param {string|string[]} tables
+     * @returns {UpdateQuery}
+     */
+    from(tables) {
+        super.from(tables);
+        return this;
+    }
+
+    /**
      * @param {string} name
      * @returns {UpdateQuery}
      */

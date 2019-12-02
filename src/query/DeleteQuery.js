@@ -10,6 +10,15 @@ export default class DeleteQuery extends Query {
     }
 
     /**
+     * @param {string|string[]} tables
+     * @returns {DeleteQuery}
+     */
+    from(tables) {
+        super.from(tables);
+        return this;
+    }
+
+    /**
      * @param {string} name
      * @returns {DeleteQuery}
      */

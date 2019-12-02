@@ -18,6 +18,15 @@ export default class SelectQuery extends Query {
     }
 
     /**
+     * @param {string|string[]} tables
+     * @returns {SelectQuery}
+     */
+    from(tables) {
+        super.from(tables);
+        return this;
+    }
+
+    /**
      * @param {string} name
      * @returns {SelectQuery}
      */
