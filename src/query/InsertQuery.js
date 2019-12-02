@@ -21,17 +21,6 @@ export default class InsertQuery extends Query {
     }
 
     /**
-     * @param {function():boolean|function(*):boolean|function(*,*):boolean|function(*,*,*):boolean} statement
-     * @param {*} variables
-     * @returns {InsertQuery}
-     */
-    where(statement, ...variables) {
-        variables = Array.isArray(variables) ? variables : [variables];
-        super.where(statement, variables);
-        return this;
-    }
-
-    /**
      * @param {boolean} value
      * @returns {InsertQuery}
      */

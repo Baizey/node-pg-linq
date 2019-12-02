@@ -27,17 +27,6 @@ export default class SelectQuery extends Query {
     }
 
     /**
-     * @param {function():boolean|function(*):boolean|function(*,*):boolean|function(*,*,*):boolean} statement
-     * @param {*} variables
-     * @returns {SelectQuery}
-     */
-    where(statement, ...variables) {
-        variables = Array.isArray(variables) ? variables : [variables];
-        super.where(statement, ...variables);
-        return this;
-    }
-
-    /**
      * ASC is default in postgres, so we have it as default as well
      * @param {*} columns
      * @returns {SelectQuery}
