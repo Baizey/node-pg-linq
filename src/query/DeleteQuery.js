@@ -15,7 +15,7 @@ export default class DeleteQuery extends Query {
      * @returns {DeleteQuery}
      */
     where(statement, ...variables) {
-        super.where(statement, variables);
+        super.where(statement, ...variables);
         return this;
     }
 

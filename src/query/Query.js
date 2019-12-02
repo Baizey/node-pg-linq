@@ -22,7 +22,7 @@ export default class Query {
 
     /**
      * @param {function():boolean|function(*):boolean|function(*,*):boolean|function(*,*,*):boolean} statement
-     * @param {*[]} variables
+     * @param {*} variables
      * @returns {Query}
      */
     where(statement, ...variables) {
@@ -63,6 +63,7 @@ export default class Query {
      * @returns {[string, object]}
      */
     _functionToSqlQuery(func, variables) {
+        const autoId = this._nextUID;
         const str = func.toString();
         let row, statement;
         if (str.indexOf('=>') >= 0)
@@ -83,7 +84,6 @@ export default class Query {
             .trim()
             .replace(/ {2,}/g, ' ');
 
-        const autoId = this._nextUID;
         const parameters = {};
         if (variables && variables.length > 0) {
             statement = statement.split('$').map((e, i) => {

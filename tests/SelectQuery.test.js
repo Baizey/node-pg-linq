@@ -38,18 +38,17 @@ describe("SelectQuery", () => {
         describe("groupBy", () => {
             it('asc', () => {
                 table.select()
-                    .groupBy('id', true)
+                    .groupBy('id')
                     .toString().should.equal('SELECT * FROM table GROUP BY id');
             });
             it('desc', () => {
                 table.select()
-                    .groupBy('id', false)
+                    .groupBy('id DESC')
                     .toString().should.equal('SELECT * FROM table GROUP BY id DESC');
             });
             it('multiple', () => {
                 table.select()
-                    .groupBy('id')
-                    .groupBy('name')
+                    .groupBy('id', 'name')
                     .toString().should.equal('SELECT * FROM table GROUP BY id, name');
             });
         });

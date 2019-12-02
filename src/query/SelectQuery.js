@@ -32,7 +32,7 @@ export default class SelectQuery extends Query {
      * @returns {SelectQuery}
      */
     where(statement, ...variables) {
-        super.where(statement, variables);
+        super.where(statement, ...variables);
         return this;
     }
 
@@ -51,7 +51,7 @@ export default class SelectQuery extends Query {
      * @param {*} variables
      * @returns {SelectQuery}
      */
-    where(statement, ...variables) {
+    having(statement, ...variables) {
         this._having = ' HAVING ' + super._functionToSqlQuery(statement, variables);
         return this;
     }

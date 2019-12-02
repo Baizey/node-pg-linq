@@ -25,7 +25,7 @@ export default class UpdateQuery extends Query {
      * @returns {UpdateQuery}
      */
     where(statement, ...variables) {
-        super.where(statement, variables);
+        super.where(statement, ...variables);
         return this;
     }
 
