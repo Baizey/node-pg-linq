@@ -8,11 +8,11 @@ describe("InsertQuery", () => {
     describe('sql', () => {
         it('basic', () => {
             const query = new InsertQuery('table', null).columns({name: 'newName'});
-            query.toString().should.equal('INSERT INTO table (name) VALUES (${name})');
+            query.toString().should.equal('INSERT INTO table (name) VALUES (${name0}) ');
         });
         it('where', () => {
             const query = new InsertQuery('table', null).columns({name: 'newName'});
-            query.toString().should.equal('INSERT INTO table (name) VALUES (${name})');
+            query.toString().should.equal('INSERT INTO table (name) VALUES (${name0}) ');
         });
     });
     describe('queries', () => {

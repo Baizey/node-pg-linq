@@ -1,14 +1,15 @@
+import FilterClause from "./FilterClause";
+
 export class QueryJoiner {
     /**
      * @param {string} table
-     * @param {Query|InsertQuery|UpdateQuery|DeleteQuery|SelectQuery} query
+     * @param {int} id
      */
-    constructor(table, query) {
+    constructor(table, id) {
         this._table = table;
         this._type = 'LEFT';
-        this._query = query;
         this._as = undefined;
-        this._isNatual = false;
+        this._statement = new FilterClause(id).asOn;
     }
 
     /**
@@ -16,7 +17,6 @@ export class QueryJoiner {
      */
     get fullOuter() {
         this._type = 'FULL OUTER';
-        this._isNatual = false;
         return this;
     }
 
@@ -25,7 +25,6 @@ export class QueryJoiner {
      */
     get leftOuter() {
         this._type = 'LEFT OUTER';
-        this._isNatual = false;
         return this;
     }
 
@@ -34,7 +33,6 @@ export class QueryJoiner {
      */
     get rightOuter() {
         this._type = 'RIGHT OUTER';
-        this._isNatual = false;
         return this;
     }
 
@@ -43,7 +41,6 @@ export class QueryJoiner {
      */
     get left() {
         this._type = 'LEFT';
-        this._isNatual = false;
         return this;
     }
 
@@ -52,7 +49,6 @@ export class QueryJoiner {
      */
     get naturalLeft() {
         this._type = 'NATURAL LEFT';
-        this._isNatual = true;
         return this;
     }
 
@@ -61,7 +57,6 @@ export class QueryJoiner {
      */
     get naturalRight() {
         this._type = 'NATURAL RIGHT';
-        this._isNatual = true;
         return this;
     }
 
@@ -70,7 +65,6 @@ export class QueryJoiner {
      */
     get naturalInner() {
         this._type = 'NATURAL INNER';
-        this._isNatual = true;
         return this;
     }
 
@@ -79,7 +73,6 @@ export class QueryJoiner {
      */
     get right() {
         this._type = 'RIGHT';
-        this._isNatual = false;
         return this;
     }
 
@@ -88,7 +81,6 @@ export class QueryJoiner {
      */
     get inner() {
         this._type = 'INNER';
-        this._isNatual = false;
         return this;
     }
 
@@ -103,16 +95,20 @@ export class QueryJoiner {
 
     /**
      * @param {function():*|function(*):*|function(*,*):*|function(*,*,*):*} statement
-     * @param {*} variables
+     * @param {*} parameters
      * @returns {QueryJoiner}
      */
-    on(statement, ...variables) {
-        this._statement = this._query._functionToSqlQuery(statement, variables || []);
+    on(statement, ...parameters) {
+        this._statement.set(statement, parameters);
         return this;
+    }
+
+    get parameters() {
+        return this._statement.parameters;
     }
 
     toString() {
         const as = this._as ? ` AS ${this._as}` : '';
-        return `${this._type} JOIN ${this._table}${as}${this._isNatual ? '' : ` ON (${this._statement})`}`;
+        return `${this._type} JOIN ${this._table}${as}${this._statement.toString()}`;
     }
 }

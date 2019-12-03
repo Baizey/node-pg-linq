@@ -57,7 +57,7 @@ describe("DbContext", function () {
 
     it('get insert query', () => {
         const context = new DbContext('table');
-        context.insert().toString().should.equal('INSERT INTO table AS table () VALUES ()');
+        context.insert({a: 1}).toString().should.equal('INSERT INTO table AS table (a) VALUES (${a0}) ');
     });
 
     it('get create query', () => {

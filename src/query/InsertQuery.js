@@ -8,6 +8,8 @@ export default class InsertQuery extends Query {
      */
     constructor(table, context) {
         super(table, context);
+        this._parameters = {};
+        this._inserting = [];
     }
 
     /**
@@ -49,13 +51,14 @@ export default class InsertQuery extends Query {
     }
 
     /**
-     * @param {object} columns
+     * @param {object|object[]} columns
      * @returns {InsertQuery}
      */
     columns(columns) {
-        this._parameters = {...this._parameters, ...columns};
-        this._columns = columns;
-        this._ignoreConflicts = false;
+        this._inserting = Array.isArray(columns) ? columns : [columns];
+        this._parameters = {};
+        const keys = Object.keys(this._inserting[0]);
+        this._inserting.forEach((obj, i) => keys.forEach(key => this._parameters[key + i] = obj[key]));
         return this;
     }
 
@@ -72,14 +75,18 @@ export default class InsertQuery extends Query {
      * @returns {string}
      */
     get _generateInsertKeysSql() {
-        return Object.keys(this._columns).join(', ');
+        return Object.keys(this._inserting[0]).join(', ');
     }
 
     /**
      * @returns {string}
      */
     get _generateInsertValuesSql() {
-        return Object.keys(this._columns).map(key => `\${${key}}`).join(', ');
+        const keys = Object.keys(this._inserting[0]);
+        return this._inserting
+            .map((_, i) =>
+                '(' + keys.map(key => `\${${key + i}}`) + ')')
+            .join(', ');
     }
 
     /**
@@ -89,7 +96,7 @@ export default class InsertQuery extends Query {
         const keys = this._generateInsertKeysSql;
         const values = this._generateInsertValuesSql;
         const ignoreConflict = (this._ignoreConflicts && ' ON CONFLICT DO NOTHING') || '';
-        return `INSERT INTO ${this._tableNames} (${keys}) VALUES (${values})${ignoreConflict}`;
+        return `INSERT INTO ${this._tableNames} (${keys}) VALUES ${values} ${ignoreConflict}`;
     }
 
     /**
@@ -97,6 +104,6 @@ export default class InsertQuery extends Query {
      * @returns {Promise<int>}
      */
     async run() {
-        return (await super.run()).rowCount;
+        return (await super.run(this._parameters)).rowCount;
     }
 }

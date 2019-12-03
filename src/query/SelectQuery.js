@@ -1,5 +1,6 @@
 import Query from "./Query.js";
 import {QueryJoiner} from "./QueryJoiner";
+import FilterClause from "./FilterClause";
 
 export default class SelectQuery extends Query {
     /**
@@ -8,7 +9,7 @@ export default class SelectQuery extends Query {
      */
     constructor(table, context) {
         super(table, context);
-        this._having = '';
+        this._having = new FilterClause(this._nextUID).asHaving;
         this._columns = [];
         this._limit = 0;
         this._offset = 0;
@@ -81,8 +82,7 @@ export default class SelectQuery extends Query {
      * @returns {SelectQuery}
      */
     having(statement, ...variables) {
-        variables = Array.isArray(variables) ? variables : [variables];
-        this._having = ' HAVING ' + super._functionToSqlQuery(statement, variables);
+        this._having.set(statement, variables);
         return this;
     }
 
@@ -149,7 +149,7 @@ export default class SelectQuery extends Query {
         const distinct = this._distinct ? ' DISTINCT' : '';
         this._having = this._having || '';
 
-        return `SELECT${distinct}${this._generateSelectSql} FROM ${this._tableNames}${this._generateFilterSql}${group}${this._having}${order}${limit}${offset}`;
+        return `SELECT${distinct}${this._generateSelectSql} FROM ${this._tableNames}${this._joinsSql}${this._where.toString()}${group}${this._having}${order}${limit}${offset}`;
     }
 
     /**

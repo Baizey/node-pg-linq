@@ -8,6 +8,7 @@ export default class UpdateQuery extends Query {
      */
     constructor(table, context) {
         super(table, context);
+        this._parameters = {};
     }
 
     /**
@@ -53,8 +54,7 @@ export default class UpdateQuery extends Query {
      * @returns {UpdateQuery}
      */
     columns(columns) {
-        this._parameters = {...this._parameters, ...columns};
-        this._columns = columns;
+        this._parameters = columns;
         return this;
     }
 
@@ -62,14 +62,14 @@ export default class UpdateQuery extends Query {
      * @returns {string}
      */
     get _generateUpdateSql() {
-        return Object.keys(this._columns).map(key => `${key} = \${${key}}`).join(', ');
+        return Object.keys(this._parameters).map(key => `${key} = \${${key}}`).join(', ');
     }
 
     /**
      * @returns {string}
      */
     toString() {
-        return `UPDATE ${this._tableNames} SET ${this._generateUpdateSql}${this._generateFilterSql}`;
+        return `UPDATE ${this._tableNames} SET ${this._generateUpdateSql}${this._joinsSql}${this._where.toString()}`;
     }
 
     /**
@@ -77,6 +77,6 @@ export default class UpdateQuery extends Query {
      * @returns {Promise<int>}
      */
     async run() {
-        return (await super.run()).rowCount;
+        return (await super.run(this._parameters)).rowCount;
     }
 }

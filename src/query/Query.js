@@ -1,4 +1,5 @@
 import {QueryJoiner} from "./QueryJoiner";
+import FilterClause from "./FilterClause";
 
 export default class Query {
 
@@ -13,9 +14,7 @@ export default class Query {
     constructor(table, context) {
         this._autoId = 0;
         this._table = table;
-        this._where = null;
-        this._variables = [];
-        this._parameters = {};
+        this._where = new FilterClause(this._nextUID).asWhere;
         this._tables = [];
         this._context = context;
         this._joins = [];
@@ -36,8 +35,7 @@ export default class Query {
      * @returns {Query}
      */
     where(statement, variables) {
-        this._where = statement;
-        this._variables = variables;
+        this._where.set(statement, variables);
         return this;
     }
 
@@ -47,7 +45,7 @@ export default class Query {
      * @returns {Query}
      */
     join(table, options = undefined) {
-        const join = new QueryJoiner(table, this);
+        const join = new QueryJoiner(table, this._nextUID);
         if (options) options(join);
         this._joins.push(join);
         return this;
@@ -69,90 +67,20 @@ export default class Query {
     }
 
     /**
-     * @param {function():*} func
-     * @param {*} variables
-     * @returns {[string, object]}
-     */
-    _functionToSqlQuery(func, variables) {
-        const autoId = this._nextUID;
-        const str = func.toString();
-        let row, statement;
-        if (str.indexOf('=>') >= 0)
-            [, row, statement] = /\s*([^\s=]*)\s*=>(.*)/.exec(str);
-        else
-            [, row, statement] = /\s*function\s*\(([^)]*)\)\s*{\s*return\s*([^;}]*)\s*;?\s*}\s*/.exec(str);
-
-        statement = statement
-            .replace(/\s*&&\s*/g, ' AND ')
-            .replace(/\s*\|\|\s*/g, ' OR ')
-            .replace(/\s*===\s*null\s*/g, ' IS NULL ')
-            .replace(/\s*!==\s*null\s*/g, ' IS NOT NULL ')
-            .replace(/\s*===\s*/g, ' = ')
-            .replace(/\s*!==\s*/g, ' <> ')
-            .replace(/\s*==\s*/g, ' LIKE ')
-            .replace(/\s*!=\s*/g, ' NOT LIKE ')
-            //.split(`${row}.`).join('')
-            .trim()
-            .replace(/ {2,}/g, ' ');
-
-        const parameters = {};
-        if (variables && variables.length > 0) {
-            statement = statement.split('$').map((e, i) => {
-                if (i >= variables.length) return e;
-                const value = variables[i];
-                const key = `auto_${autoId}_${i}`;
-                if (Array.isArray(value)) {
-                    const values = value.map((v, i) => {
-                        const arrayKey = `${key}_${i}`;
-                        parameters[arrayKey] = v;
-                        return `\${${arrayKey}}`;
-                    }).join(', ');
-                    return `${e}(${values})`;
-                } else {
-                    parameters[key] = value;
-                    return `${e}\${${key}}`;
-                }
-            }).join('');
-        }
-        this._parameters = {...this._parameters, ...parameters};
-        return statement;
-    }
-
-    /**
      * @returns {string}
      */
-    get _generateJoinSql() {
-        if (this._joins.length === 0) return '';
-        return this._joins.map(e => e.toString()).join(' ');
-    }
-
-    /**
-     * @returns {string}
-     */
-    get _generateWhereSql() {
-        if (!this._where) return '';
-        const statement = this._functionToSqlQuery(this._where, this._variables);
-        return statement ? `WHERE ${statement}` : '';
-    }
-
-    /**
-     * @returns {string}
-     */
-    get _generateFilterSql() {
-        const where = this._generateWhereSql;
-        const joins = this._generateJoinSql;
-        if (!where && !joins) return '';
-        if (!where) return ' ' + joins;
-        if (!joins) return ' ' + where;
-        return ' ' + joins + ' ' + where;
+    get _joinsSql() {
+        return this._joins.length ? ' ' + this._joins.map(e => e.toString()).join(' ') : '';
     }
 
     /**
      * @returns {Promise<{rowCount: int, rows: *[], fields: {name: string, dataTypeId: *}[], command: string}>}
      */
-    async run() {
+    async run(parameters = {}) {
         const sql = this.toString();
-        const parameters = this._parameters;
+        parameters = {...parameters, ...this._where.parameters};
+        for (let i = 0; i < this._joins.length; i++)
+            parameters = {...parameters, ...this._joins[i].parameters};
         return await this._context.run(sql, parameters);
     }
 }
