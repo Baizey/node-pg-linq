@@ -39,7 +39,7 @@ describe("CreateQuery", () => {
         it('primary key', () => {
             const query = new CreateTableQuery('name', undefined);
             query.int('id').primary();
-            query.toString().should.equal('CREATE TABLE name (id int PRIMARY KEY)');
+            query.toString().should.equal('CREATE TABLE name (id int CONSTRAINT primary_id PRIMARY KEY)');
         });
         it('foreign key', () => {
             const query = new CreateTableQuery('name', undefined);
@@ -54,7 +54,7 @@ describe("CreateQuery", () => {
         it('unique', () => {
             const query = new CreateTableQuery('name', undefined);
             query.int('id').unique();
-            query.toString().should.equal('CREATE TABLE name (id int UNIQUE)');
+            query.toString().should.equal('CREATE TABLE name (id int CONSTRAINT unique_id UNIQUE)');
         });
         it('default', () => {
             const query = new CreateTableQuery('name', undefined);
@@ -77,32 +77,32 @@ describe("CreateQuery", () => {
             const query = new CreateTableQuery('name', undefined);
             const id = query.int('id');
             const name = query.text('name');
-            query.primaryGroup([id, name]);
-            query.toString().should.equal('CREATE TABLE name (id int, name text, PRIMARY KEY (id, name))');
+            query.setPrimaryGroup([id, name]);
+            query.toString().should.equal('CREATE TABLE name (id int, name text, CONSTRAINT primary_id_name PRIMARY KEY (id, name))');
         });
         it('unique keys', () => {
             const query = new CreateTableQuery('name', undefined);
             const id = query.int('id');
             const name = query.text('name');
-            query.uniqueGroup([id, name]);
-            query.toString().should.equal('CREATE TABLE name (id int, name text, UNIQUE (id, name))');
+            query.addUniqueGroup([id, name]);
+            query.toString().should.equal('CREATE TABLE name (id int, name text, CONSTRAINT unique_id_name UNIQUE (id, name))');
         });
         it('multiple unique keys', () => {
             const query = new CreateTableQuery('name', undefined);
             const id = query.int('id');
             const name = query.text('name');
-            query.uniqueGroup([id, name]);
-            query.uniqueGroup([id]);
-            query.uniqueGroup([name]);
-            query.toString().should.equal('CREATE TABLE name (id int, name text, UNIQUE (id, name),, UNIQUE (id),, UNIQUE (name))');
+            query.addUniqueGroup([id, name]);
+            query.addUniqueGroup([id]);
+            query.addUniqueGroup([name]);
+            query.toString().should.equal('CREATE TABLE name (id int, name text, CONSTRAINT unique_id_name UNIQUE (id, name),, CONSTRAINT unique_id UNIQUE (id),, CONSTRAINT unique_name UNIQUE (name))');
         });
         it('both unique and primary', () => {
             const query = new CreateTableQuery('name', undefined);
             const id = query.int('id');
             const name = query.text('name');
-            query.primaryGroup([id]);
-            query.uniqueGroup([name]);
-            query.toString().should.equal('CREATE TABLE name (id int, name text, PRIMARY KEY (id), UNIQUE (name))');
+            query.setPrimaryGroup([id]);
+            query.addUniqueGroup([name]);
+            query.toString().should.equal('CREATE TABLE name (id int, name text, CONSTRAINT primary_id PRIMARY KEY (id), CONSTRAINT unique_name UNIQUE (name))');
         });
     });
 });

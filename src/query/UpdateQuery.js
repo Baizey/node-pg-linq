@@ -11,6 +11,24 @@ export default class UpdateQuery extends Query {
     }
 
     /**
+     * @param {string|string[]} tables
+     * @returns {UpdateQuery}
+     */
+    from(tables) {
+        super.from(tables);
+        return this;
+    }
+
+    /**
+     * @param {string} name
+     * @returns {UpdateQuery}
+     */
+    as(name) {
+        super.as(name);
+        return this;
+    }
+
+    /**
      * @param {function():boolean|function(*):boolean|function(*,*):boolean|function(*,*,*):boolean} statement
      * @param {*} variables
      * @returns {UpdateQuery}
@@ -51,7 +69,7 @@ export default class UpdateQuery extends Query {
      * @returns {string}
      */
     toString() {
-        return `UPDATE ${this._tableName} SET ${this._generateUpdateSql}${this._generateFilterSql}`;
+        return `UPDATE ${this._tableNames} SET ${this._generateUpdateSql}${this._generateFilterSql}`;
     }
 
     /**

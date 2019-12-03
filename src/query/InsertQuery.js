@@ -11,6 +11,24 @@ export default class InsertQuery extends Query {
     }
 
     /**
+     * @param {string|string[]} tables
+     * @returns {InsertQuery}
+     */
+    from(tables) {
+        super.from(tables);
+        return this;
+    }
+
+    /**
+     * @param {string} name
+     * @returns {InsertQuery}
+     */
+    as(name) {
+        super.as(name);
+        return this;
+    }
+
+    /**
      * @param {function():boolean|function(*):boolean|function(*,*):boolean|function(*,*,*):boolean} statement
      * @param {*} variables
      * @returns {InsertQuery}
@@ -71,7 +89,7 @@ export default class InsertQuery extends Query {
         const keys = this._generateInsertKeysSql;
         const values = this._generateInsertValuesSql;
         const ignoreConflict = (this._ignoreConflicts && ' ON CONFLICT DO NOTHING') || '';
-        return `INSERT INTO ${this._tableName} (${keys}) VALUES (${values})${ignoreConflict}`;
+        return `INSERT INTO ${this._tableNames} (${keys}) VALUES (${values})${ignoreConflict}`;
     }
 
     /**

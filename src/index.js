@@ -78,9 +78,19 @@ export default class DbContext {
      */
     constructor(tableName) {
         this.tableName = tableName;
+        this._as = tableName;
         this._conn = undefined;
         this._usage = async (sql, params) => {
         };
+    }
+
+    /**
+     * @param {string} name
+     * @returns {DbContext}
+     */
+    as(name) {
+        this._as = name;
+        return this;
     }
 
     /**
@@ -142,7 +152,7 @@ export default class DbContext {
      * @returns {SelectQuery}
      */
     select(columns = []) {
-        return new SelectQuery(this.tableName, this).columns(columns);
+        return new SelectQuery(this.tableName, this).columns(columns).as(this._as);
     }
 
     /**
@@ -150,7 +160,7 @@ export default class DbContext {
      * @returns {InsertQuery}
      */
     insert(object = {}) {
-        return new InsertQuery(this.tableName, this).columns(object);
+        return new InsertQuery(this.tableName, this).columns(object).as(this._as);
     }
 
     /**
@@ -160,8 +170,8 @@ export default class DbContext {
      */
     delete(statement = undefined, ...variables) {
         if (statement)
-            return new DeleteQuery(this.tableName, this).where(statement, ...variables);
-        return new DeleteQuery(this.tableName, this);
+            return new DeleteQuery(this.tableName, this).where(statement, ...variables).as(this._as);
+        return new DeleteQuery(this.tableName, this).as(this._as);
     }
 
     end() {
@@ -174,7 +184,7 @@ export default class DbContext {
      * @returns {UpdateQuery}
      */
     update(columns = {}) {
-        return new UpdateQuery(this.tableName, this).columns(columns);
+        return new UpdateQuery(this.tableName, this).columns(columns).as(this._as);
     }
 }
 

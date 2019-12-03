@@ -10,6 +10,24 @@ export default class DeleteQuery extends Query {
     }
 
     /**
+     * @param {string|string[]} tables
+     * @returns {DeleteQuery}
+     */
+    from(tables) {
+        super.from(tables);
+        return this;
+    }
+
+    /**
+     * @param {string} name
+     * @returns {DeleteQuery}
+     */
+    as(name) {
+        super.as(name);
+        return this;
+    }
+
+    /**
      * @param {function():boolean|function(*):boolean|function(*,*):boolean|function(*,*,*):boolean} statement
      * @param {*} variables
      * @returns {DeleteQuery}
@@ -34,8 +52,8 @@ export default class DeleteQuery extends Query {
      */
     toString() {
         const filter = this._generateFilterSql;
-        const table = this._tableName;
-        return `DELETE FROM ${table}${filter}`;
+        const from = this._tableNames;
+        return `DELETE FROM ${from}${filter}`;
     }
 
     /**

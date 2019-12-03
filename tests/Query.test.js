@@ -4,6 +4,7 @@ import Query from "../src/query/Query";
 import DbContext from "../src";
 import Mock from "./mock/Mock";
 import InsertQuery from "../src/query/InsertQuery";
+import SelectQuery from "../src/query/SelectQuery";
 
 describe("Query", () => {
     describe('where', () => {
@@ -66,6 +67,10 @@ describe("Query", () => {
                 .where(table => table.id in $, [1, 2, 3]);
             query._generateFilterSql.should.equal(' WHERE table.id in (${auto_0_0_0}, ${auto_0_0_1}, ${auto_0_0_2})');
         });
+    });
+    it('from', () => {
+        const query = new SelectQuery('table', null).from('other');
+        query.toString().should.equal('SELECT * FROM table, other');
     });
     describe('join', () => {
         const context1 = new DbContext('JoinQueryTest1'),
