@@ -1,6 +1,19 @@
 language: node_js
 node_js:
   - "12.6.0"
+addons:
+  postgresql: "9.6"
+  apt:
+    packages:
+      - postgresql-9.6
+      - postgresql-client-9.6
+env:
+  global:
+    - PGPORT=5432
+    - PGUSER=postgres
+    - PGHOST=localhost
+    - PGDATABASE=postgres
 before_script:
+  - psql -U postgres
   - npm install
 script: node_modules\mocha 'tests/*.test.js' --require @babel/register
