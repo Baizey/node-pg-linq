@@ -17,5 +17,4 @@ services:
   - postgresql
 before_script:
   - npm install
-  - psql -c 'create database postgres;' -U postgres
 script: npm test
