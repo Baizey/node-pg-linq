@@ -66,11 +66,6 @@ describe("CreateQuery", () => {
             query.text('id').withDefault("text");
             query.toString().should.equal('CREATE TABLE name (id text DEFAULT "text")');
         });
-        it('serial', () => {
-            const query = new CreateTableQuery('name', undefined);
-            query.int('id').serial();
-            query.toString().should.equal('CREATE TABLE name (id int SERIAL)');
-        });
     });
     describe('groups', () => {
         it('primary keys', () => {

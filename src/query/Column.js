@@ -11,7 +11,6 @@ export class Column {
         this._isUnique = false;
         this._isPrimary = false;
         this._isNullable = true;
-        this._isSerial = false;
         this._defaultValue = undefined;
         this._referenceValue = undefined;
     }
@@ -38,10 +37,6 @@ export class Column {
         return this._name;
     }
 
-    get isSerial() {
-        return this._isSerial;
-    }
-
     get isNullable() {
         return this._isNullable;
     }
@@ -64,15 +59,6 @@ export class Column {
      */
     unique(value = true) {
         this._isUnique = !!value;
-        return this;
-    }
-
-    /**
-     * @param {boolean} value
-     * @returns {Column}
-     */
-    serial(value = true) {
-        this._isSerial = !!value;
         return this;
     }
 
@@ -122,7 +108,6 @@ export class Column {
         const foreign = (this._referenceValue && ` REFERENCES ${this._referenceValue}`) || '';
         const unique = (this._isUnique && ` CONSTRAINT ${this.uniqueConstraint.name} UNIQUE`) || '';
         const primary = (this._isPrimary && ` CONSTRAINT ${this.primaryConstraint.name} PRIMARY KEY`) || '';
-        const serial = (this._isSerial && ' SERIAL') || '';
-        return `${this._name} ${this._type}${nullable}${defaultValue}${foreign}${unique}${primary}${serial}`;
+        return `${this._name} ${this._type}${nullable}${defaultValue}${foreign}${unique}${primary}`;
     }
 }
