@@ -33,7 +33,6 @@ jobs:
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-
       - name: npm install, build, and test
         run: |
           npm ci
@@ -51,7 +50,6 @@ jobs:
           uses: coverallsapp/github-action@master
           with:
             github-token: ${{ secrets.github_registry_token }}
-
   publish-npm:
     needs: build
     runs-on: ubuntu-latest
