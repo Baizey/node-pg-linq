@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/Baizey/node-pg-linq.svg?branch=master)](https://travis-ci.org/Baizey/node-pg-linq)
 [![Build Status](https://david-dm.org/Baizey/node-pg-linq.svg?branch=master)](https://david-dm.org/)
+[![Coverage Status](https://coveralls.io/repos/github/Baizey/node-pg-linq/badge.svg)](https://coveralls.io/github/Baizey/node-pg-linq)
 
  An npm package to create Postgres queries in a linq-ish way with a sprinkle of entity framework
  
