@@ -31,11 +31,13 @@ create.real('score').nullable(false).default(0);
 await create.run();
 
 // Execute queries on users table
-await users.insert({name: 'John'}).run();
+await users.insert([{name: 'John'}, {name: 'Bob'}]).run();
 await users.update({score: 10}).where(() => users.name === "John").run();
 const select = await users.select().where(() => users.name === $, 'John').one();
-await users.delete().where(() => users.score > 5).run();
+await users.delete(() => users.score > 5).run();
 ```
+
+All functions are 
 
 ## DbContext
 ### Initialization
@@ -56,7 +58,7 @@ const pool = table.connection;
 // Lastly you can tell it to use a custom query system if you want something else
 table.using((sql, params) => {...});
 ```
-### DbContext API
+### DbContext functions
 `[]` indicates optional parameter.
 
 - `run(sql, [params])` runs the sql as a query with params given, returns what a query from pg would return
@@ -70,14 +72,38 @@ table.using((sql, params) => {...});
 - `select([columns])` returns a new `SelectQuery`, optionally select the columns to be returned immediately
 - `update([object])` returns a new `UpdateQuery`, optionally give the columns to update immediately
 
-## WHERE
 
-where clauses are given as lambda function
+## Query clauses in general
+
+### ALIAS (AS)
+`query.as(string)`
+
+same as adding 'AS string' in a query for the FROM table AS string.
+
+fx `query.as('t')`
+
+### FROM
+`query.from(string[])` or `query.from(string)`
+
+here to support from many tables, these are included with the original table for the DbContext
+
+if you want aliases for these tables they need to be added in the string
+
+fx `query.from('other AS o')`
+
+### WHERE
+`query.where(function)` or `query.where(function, arg1, arg2, ..., argN)`
+
+given a function which returns a bool with variables stated as $ and then passed on as extra arguments
+
+For postgres functions such as `SUM` simply do `SUM(x)` in the function and ignore whether the function exists
+
+For things where JavaScript doesnt support the format there is conversions from JavaScript ways
 
 | postgres | javascript |
 |----------|------------|
 | AND | && |
-| OR | |
+| OR | \|\| |
 | = | === |
 | <> | !== |
 | IS NULL | === null |
@@ -85,37 +111,71 @@ where clauses are given as lambda function
 | LIKE | == |
 | NOT LIKE | != |
 
-for everything else you need to write it as it should look in postgresql
+To specify which table a column is from simply do
 
-to pass variables into the queries you need to add a $ where they should be and add them as arguments after the function
+`query.where(() => table.score)> 5)`
 
-```javascript
-query.where(() => id === $, 5);
-query.where(() => id in $, [1,2,3,4]);
-query.where(() => id in $ && name === $, [1,2,3,4], "John");
-query.where(() => SUM(score) === 5);
-```
+Here are a number of simple examples
 
-## JOIN
+ `query.where(() => score)> $, 5)` if 5 is variable
 
-joins are used in a different way from all other func in this package
+or `query.where(() => score > 5)` if 5 is a constant
 
-```javascript
-query.as('t').join('otherTable', joiner => joiner.as('o').inner.on(() => o.id === t.id));
-```
+or `query.where(() => $ < score && score < $, 5, 10)` if there are multiple variables
 
-When you use .join() on a query it expects 2 parameters, the first is the name of the table you join on.
+or `query.where(() => id in $, [1, 2, 3, 4])` equivalent to `query.where(() => id in ($, $, $, $), 1, 2, 3, 4)`
 
-The second parameter is a lambda function which gets a QueryJoiner as argument and expects no result
+### JOIN
+`query.join(string, function(QueryJoiner))`
 
-on the QueryJoiner object you will have 3 types of functions, .as(alias) to give the new table an alias,
- a number of options as to which type of join it should be (inner, left, right, leftOuter, rightOuter, fullOuter), and finally you have the on(lambda) function which expects a similar input to the where clause
- 
- A thing to note is that when you have multiple tables in the same query you need to refer to which table you get variables from, you do not need to do this if there is only 1 table
- 
+join expects a tableName as string and a function which will be fed an QueryJoiner object.
+
+QueryJoiner has a number of function on itself
+
+#### QueryJoiner
+
+##### ON
+`opt.on(function)` or `query.opt(function, arg1, arg2, ..., argN)`
+
+Works similarly to WHERE, but is for joining tables
+
+fx `opt.on(() => otherTable.id === table.id)`
+
+##### ALIAS (AS)
+`opt.as(string)`
+
+Same as ALIAS (AS) for queries
+
+##### NATURAL LEFT        
+`query.join(otherTable, opt => opt.naturalLeft)`
+
+Note this is not to be used with ON
+##### NATURAL INNER       
+`query.join(otherTable, opt => opt.naturalInner)`
+
+Note this is not to be used with ON
+##### NATURAL RIGHT       
+`query.join(otherTable, opt => opt.naturalRight)`
+
+Note this is not to be used with ON
+##### INNER       
+`query.join(otherTable, opt => opt.inner)`
+##### FULL OUTER  
+`query.join(otherTable, opt => opt.fullOuter)`
+##### LEFT        
+`query.join(otherTable, opt => opt.left)`
+##### LEFT OUTER  
+`query.join(otherTable, opt => opt.leftOuter)`
+##### RIGHT       
+`query.join(otherTable, opt => opt.right)`
+##### RIGHT OUTER 
+`query.join(otherTable, opt => opt.rightOuter)`
+
 ## CreateQuery
- 
-Creating table queries act much in the same way C#'s fluent API for entity framework works.
+
+CreateTable queries act much in the same way C#'s fluent API for the entity framework.
+
+### Adding columns
 
 Directly supported column types:
 - int `create.int('name')`
@@ -130,12 +190,16 @@ for anything else there is:
 `create.addColumn(name, type)` where type is a `string`, fx 'int'
 
 All these functions takes an argument name as a `string` and returns a `Column` object
-
-When columns has been created there are a few more functions you can utilize:
+### Group constraints
 
 - `uniqueGroup(Column[])` creates indexing for a group of columns
 - `primaryGroup(Column[])` creates primary key for a group of columns
+
+### Other
+
 - `ignoreIfExists(bool)` ignores conflicts where table already exists
+
+### Columns
 
 The `column` object has a number of functions on itself, all functions return the `Column` object back
 - `nullable(bool)` (columns are by default nullable)
@@ -144,54 +208,107 @@ The `column` object has a number of functions on itself, all functions return th
 - `reference(tableName, columnName)`
 - `withDefault(anything)`
 
-after everything is configured `create.run()` can be executed, it returns `Promise<void>` which you can await for the query to finish
+### Execution
+`query.run()`
 
-## Shared clauses for INSERT, UPDATE, SELECT and DELETE
-- FROM `query.from('other')` or `query.from(['other1', 'other2'])`. Note this is only for extra tables, your default table as given in DbContext is always included
-- WHERE `query.where(() => id === 5)` or `query.where(() => id === $ && name === $, 5, 'John')`
-- ALIAS (AS) `query.as('alias')`
-- JOIN
-  - ALIAS (AS) `query.join('other', opt => opt.as('alias')`
-  - ON `query.join('other', opt => opt.on(() => other.id === table.id))`
-  - NATURAL LEFT        `query.join('other', opt => opt.naturalLeft)`
-  - NATURAL INNER       `query.join('other', opt => opt.naturalInner)`
-  - NATURAL RIGHT       `query.join('other', opt => opt.naturalRight)`
-  - INNER       `query.join('other', opt => opt.inner)`
-  - FULL OUTER  `query.join('other', opt => opt.fullOuter)`
-  - LEFT        `query.join('other', opt => opt.left)`
-  - LEFT OUTER  `query.join('other', opt => opt.leftOuter)`
-  - RIGHT       `query.join('other', opt => opt.right)`
-  - RIGHT OUTER `query.join('other', opt => opt.rightOuter)`
-  
-Note alias is optional, and if you select any NATURAL joins, ON is disabled
+Returns `Promise<void>` when the query has finished
 
 ## DeleteQuery
-- run `query.run()` executes the query and returns `Promise<int>` with how many rows were affected
-- toString `query.toString()` returns the query as an sql string
+
+### Execution
+`query.run()`
+
+Returns `Promise<int>` with the int being number of affected rows
 
 ## UpdateQuery
-- columns to update `query.columns({name: 'John', score: 4}).where(() => id === 5)`
-- run `query.run()` executes the query and returns `Promise<int>` with how many rows were affected
-- toString `query.toString()` returns the query as an sql string
+
+### Columns to insert (SET)
+`query.columns(object)`
+
+fx `query.columns({name: 'John', score: 0})`
+
+### Execution
+`query.run()`
+
+Returns `Promise<int>` with the int being number of affected rows
 
 ## InsertQuery
-- columns to insert values for `query.columns({name: 'John', score: 4})`
- - ON CONFLICT
-   - IGNORE     `query.ignoreConflicts(true)`
-- run `query.run()` executes the query and returns `Promise<void>`
-- toString `query.toString()` returns the query as an sql string
+
+### Columns to insert (VALUES)
+`query.columns(object[])` or `query.columns(object)`
+
+If an array is given the first object determines the columns for insertion
+
+fx `query.columns({name: 'John', score: 0})` or `query.columns([{name: 'John'}, {name: 'Bob'}])`
+
+### CONFLICT
+`query.ignoreConflicts(bool = true)`
+Currently only the action `IGNORE` is supported
+
+### Execution
+`query.run()`
+
+Returns `Promise<int>` with the int being number of affected rows
 
 ## SelectQuery
-Supported clauses
-- columns to return `query.columns(['id', 'name', 'score'])`
-- LIMIT     `query.limit(5)`
-- OFFSET    `query.offset(5)`
-- ORDER BY  `query.orderBy('name')` with optional secondary parameter bool ascending default `ascending = true` 
-- GROUP BY  `query.groupBy('name')` or `query.groupBy(['name', 'id'])`
-- HAVING `query.having(statement, parameters)` works similar to `WHERE`
-- DISTINCT
-    - DISTINCT ON (column)  `query.distinct('name')`
-    - DISTINCT              `query.distinct(true)`
-- one `query.one()` executes the query and returns the first result row `Promise<object|undefined>` (if no rows, returns undefined)
-- all `query.all()` executes the query and returns `Promise<object[]>` all rows (if none, returns empty array)
-- toString `query.toString()` returns the query as an sql string
+
+### Columns to return (SELECT)
+`query.columns(string[])` or `query.columns(string)`
+
+This directly conflicts with `query.distinct(string)`, and reverts these selected columns to non-distinct
+
+fx `query.columns(['id', 'name', 'score'])`
+
+### LIMIT 
+`query.limit(int)`
+
+fx: `query.limit(5)`
+
+### OFFSET    
+`query.offset(int)`
+
+fx: `query.offset(5)`
+
+### ORDER BY  
+`query.orderBy(string, [ascending = true])`
+
+takes a string argument and an optional bool which defaults to true whether or not the ordering is done ascending.
+
+fx `query.orderBy('name', true)`
+
+### GROUP BY  
+`query.groupBy(string[])` or `query.groupBy(string)`
+
+fx `query.columns(['id', 'name', 'score'])`
+
+
+### HAVING  
+`query.having(function)` or `query.having(function, arg1, arg2, ..., argN)`
+
+Works similarly to WHERE, but is for filtering groupBy
+
+fx `query.having(() => SUM(score) > 5)`
+
+### DISTINCT
+`query.distinct(bool = true)` or `query.distinct(string)`
+
+default is true,
+
+if a bool is given, all columns are distinct
+
+if a string is given query is distinct for that single column. If a column were previously added through `.columns(...)` this row will be converted to distinct.
+
+this can be used multiple times to have it be distinct for a subset of columns
+
+### Execution
+`query.one()` or `query.all()`
+
+both returns a promise
+
+`query.one()` returns either the first row or undefined if no rows were found.
+
+`query.all()` returns an array of rows, an empty array if no rows were found.
+
+A row in this case is an object like
+
+`{ id: 5,  name: "John",  score: 0 }`

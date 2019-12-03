@@ -57,11 +57,11 @@ export default class SelectQuery extends Query {
     }
 
     /**
-     * @param {string[]} columns
+     * @param {string|string[]} columns
      * @returns {SelectQuery}
      */
     columns(columns) {
-        this._columns = columns || [];
+        this._columns = Array.isArray(columns) ? columns : [columns];
         this._distincts = this._distincts.filter(e => e === this._columns.indexOf(e) === -1);
         return this;
     }
