@@ -1,4 +1,8 @@
 # pg-linq
+
+[![Build Status](https://travis-ci.org/Baizey/node-pg-linq.svg?branch=master)](https://travis-ci.org/Baizey/node-pg-linq)
+[![Build Status](https://david-dm.org/Baizey/node-pg-linq.svg?branch=master)](https://david-dm.org/)
+
  An npm package to create Postgres queries in a linq-ish way with a sprinkle of entity framework
  
  It is suggested to use an IDE which can utilize the extensive jsdoc to give you proper support on what and how functions are used

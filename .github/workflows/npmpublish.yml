@@ -45,6 +45,10 @@ jobs:
           PGPORT: ${{ job.services.postgres.ports[5432] }}
           PGDATABASE: postgres
           CI: true
+      - name: Coveralls
+        uses: coverallsapp/github-action@master
+        with:
+          github-token: ${{ secrets.github_registry_token }}
 
 
   publish-npm:
