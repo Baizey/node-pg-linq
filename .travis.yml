@@ -13,7 +13,9 @@ env:
     - PGUSER=postgres
     - PGHOST=localhost
     - PGDATABASE=postgres
+services:
+  - postgresql
 before_script:
-  - psql -U postgres
   - npm install
-script: node_modules\mocha 'tests/*.test.js' --require @babel/register
+  - psql -c 'create database postgres;' -U postgres
+script: npm test
