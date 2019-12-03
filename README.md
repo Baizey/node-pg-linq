@@ -137,7 +137,6 @@ The `column` object has a number of functions on itself, all functions return th
 - `nullable(bool)` (columns are by default nullable)
 - `primary(bool)` makes this column a primary key for itself same as `primaryGroup(Column[])` with only this column
 - `unique(bool)` makes this column a unique index for itself same as `uniqueGroup(Column[])` with only this column
-- `serial(bool)`
 - `reference(tableName, columnName)`
 - `withDefault(anything)`
 
