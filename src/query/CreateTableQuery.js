@@ -49,6 +49,27 @@ export default class CreateTableQuery {
     }
 
     /**
+     * @returns {Constraint[]}
+     */
+    get uniqueGroupConstraints() {
+        return this._uniqueGroups;
+    }
+
+    /**
+     * @returns {Constraint}
+     */
+    get primaryGroupConstraints() {
+        return this._primaryGroup;
+    }
+
+    /**
+     * @returns {Column[]}
+     */
+    get columns() {
+        return this._columns;
+    }
+
+    /**
      * @returns {Column[]}
      */
     get columns() {
@@ -61,10 +82,14 @@ export default class CreateTableQuery {
     get constraints() {
         const result = [];
         this.columns.forEach(column => {
-            const primary = column.primaryConstraint;
-            if (primary) result.push(primary);
-            const unique = column.uniqueConstraint;
-            if (unique) result.push(unique);
+            if (column.primaryConstraint)
+                result.push(column.primaryConstraint);
+
+            if (column.uniqueConstraint)
+                result.push(column.uniqueConstraint);
+
+            if (column.hasReference)
+                result.push(column.referenceConstraint)
         });
         this._uniqueGroups.forEach(e => result.push(e));
         if (this._primaryGroup) result.push(this._primaryGroup);

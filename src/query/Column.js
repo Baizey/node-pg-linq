@@ -1,4 +1,4 @@
-import Constraint from "./Constraint";
+import Constraint, {ReferenceConstraint} from "./Constraint";
 
 export class Column {
     /**
@@ -12,7 +12,14 @@ export class Column {
         this._isPrimary = false;
         this._isNullable = true;
         this._defaultValue = undefined;
-        this._referenceValue = undefined;
+        this._referenceConstraint = undefined;
+    }
+
+    /**
+     * @returns {ReferenceConstraint}
+     */
+    get referenceConstraint() {
+        return this._referenceConstraint;
     }
 
     /**
@@ -27,6 +34,13 @@ export class Column {
      */
     get primaryConstraint() {
         return this.isPrimaryKey ? new Constraint(Constraint.types.primary, this) : undefined;
+    }
+
+    /**
+     * @returns {boolean}
+     */
+    get hasReference() {
+        return !!this._referenceConstraint;
     }
 
     get type() {
@@ -95,7 +109,7 @@ export class Column {
      * @returns {Column}
      */
     reference(tableName, columnName) {
-        this._referenceValue = `${tableName}(${columnName})`;
+        this._referenceConstraint = new ReferenceConstraint(this, tableName, columnName);
         return this;
     }
 
@@ -105,7 +119,7 @@ export class Column {
     toString() {
         const nullable = (!this._isNullable && ' NOT NULL') || '';
         const defaultValue = ((typeof this._defaultValue !== 'undefined') && ` DEFAULT ${this._defaultValue}`) || '';
-        const foreign = (this._referenceValue && ` REFERENCES ${this._referenceValue}`) || '';
+        const foreign = (this.hasReference && ` REFERENCES ${this._referenceConstraint.reference}`) || '';
         const unique = (this._isUnique && ` CONSTRAINT ${this.uniqueConstraint.name} UNIQUE`) || '';
         const primary = (this._isPrimary && ` CONSTRAINT ${this.primaryConstraint.name} PRIMARY KEY`) || '';
         return `${this._name} ${this._type}${nullable}${defaultValue}${foreign}${unique}${primary}`;
