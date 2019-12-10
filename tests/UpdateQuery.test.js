@@ -25,7 +25,6 @@ describe("UpdateQuery", () => {
 
         it('basic', async () => {
             const insert = context.insert({name: 'John', id: 1});
-            const sql = insert.toString();
             await insert.run();
             await context.update({name: 'Bob'}).run();
             (await context.select().all()).should.deepEqual([{name: 'Bob', id: 1}]);

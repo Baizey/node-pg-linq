@@ -1,6 +1,17 @@
 import Constraint from "../query/Constraint";
 
 export default class MigrationQueries {
+
+    /**
+     * @param {DbContext} context
+     */
+    static currentScheme(context) {
+        return new Promise(async resolve => {
+            const scheme = await context.run(`SELECT * FROM ${context.tableName} LIMIT 1`);
+            resolve(scheme);
+        });
+    }
+
     /**
      * @param {CreateTableQuery} currentTable
      * @param {CreateTableQuery} newTable
@@ -23,11 +34,11 @@ export default class MigrationQueries {
         });
 
         // Drop old columns
-        oldColumns.filter(oldColumn => !newColumns[oldColumn.name])
+        currentTable.columns.filter(oldColumn => !newColumns[oldColumn.name])
             .forEach(oldColumn => query.dropColumn(oldColumn));
 
         // Add and alter columns
-        newColumns
+        newTable.columns
             .map(newColumn => ({new: newColumn, old: oldColumns[newColumn.name]}))
             .forEach(columns => columns.old
                 ? query.alterColumn(columns.old, columns.new)
