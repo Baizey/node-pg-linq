@@ -43,6 +43,6 @@
     "pgtest": "^0.2.3",
     "regenerator-runtime": "^0.13.3",
     "should": "^13.2.3",
-    "standard-version": "^7.0.1"
+    "standard-version": "^8.0.1"
   }
 }
