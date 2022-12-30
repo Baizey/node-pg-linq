@@ -39,7 +39,7 @@
     "chai": "^4.2.0",
     "core-js": "^3.2.1",
     "esm": "^3.2.25",
-    "mocha": "^6.2.0",
+    "mocha": "^10.2.0",
     "pgtest": "^0.2.3",
     "regenerator-runtime": "^0.13.3",
     "should": "^13.2.3",
